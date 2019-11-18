@@ -166,8 +166,8 @@ df1 <- setNames(df, c("Subject", "Progress", "Duration", "Pilot_Stability", "Pil
                       "Election_CognitiveBias", 
                       "Election_MotivatedBias", 
                       "Election_BiasMitigating", 
-                      "AttCheck1",
-                      "AttCheck2", 
+                      "AttnCheck1",
+                      "AttnCheck2", 
                       "NRS1", 
                       "NRS2", 
                       "NRS3",
@@ -201,13 +201,14 @@ df1 <- setNames(df, c("Subject", "Progress", "Duration", "Pilot_Stability", "Pil
 df1 <- df1%>%
   mutate(AttnCheck2 = replace(AttnCheck2,AttnCheck2 == "in", 1))%>%
   mutate(AttnCheck2=replace(AttnCheck2,AttnCheck2=="In", 1))%>%
+  mutate(AttnCheck2=replace(AttnCheck2,AttnCheck2=="IN", 1))%>%
   mutate(AttnCheck2 = replace(AttnCheck2, AttnCheck2 != 1, 0))%>%
   mutate(AttnCheck2 = as.numeric(AttnCheck2))%>%
-  mutate(AttnCheck = as.numeric(AttnCheck))%>%
-  mutate(failed_AttnCheck = AttnCheck2 + AttnCheck)%>%
+  mutate(AttnCheck1 = as.numeric(AttnCheck1))%>%
+  mutate(failed_AttnCheck = AttnCheck2 + AttnCheck1)%>%
   filter(failed_AttnCheck != 0)
 
-# Longformatting expert type and question
+# Longformatting expert type (18 domains) and question (12 Qs, like stability, clarity, etc.)
 
 # We will keep all variables in the first gather but keep only the two new columns 
 # for the rest
@@ -383,8 +384,4 @@ df_long2 <- df_long1 %>%
                               NFL_Stability = "NFL", 
                               Restaurant_Stability = "Restaurant_Critic", 
                               Human_Resource_Stability = "HR_Agent", Election_Stability = "Election"))
-
-
-
-
 
