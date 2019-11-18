@@ -3,13 +3,18 @@ library(tidyverse)
 library(dplyr)
 library(data.table)
 library(readr)
-Percepts_of_Expert_Bias_Dataset_Functional_Dataset <- read_csv("Expert Bias/Percepts of Expert Bias Dataset_Functional Dataset.csv")
-View(Percepts_of_Expert_Bias_Dataset_Functional_Dataset)
 
-df <- Percepts_of_Expert_Bias_Dataset_Functional_Dataset
+## Import the data (Percepts of Expert Bias Datset_Functional Dataset - CSV)
+ df <- Percepts_of_Expert_Bias_Dataset_Functional_Dataset
+
+#Added a subject number column
 df <- tibble::rowid_to_column(df, "Subject")
-varnames <- colnames(Percepts_of_Expert_Bias_Dataset_Functional_Dataset)
 
+#Created a list of all of the column names so we could see the original problematic names in order to change them
+varnames <- colnames(df)
+
+#Uses the data.table package function setNames to change all of the original problematic column names into 
+#better, more useable variable names
 df1 <- setNames(df, c("Subject", "Progress", "Duration", "Pilot_Stability", "Pilot_Clarity", "Pilot_Accuracy", "Pilot_Disagree", "Pilot_Like", 
                       "Pilot_Training", "Pilot_Contact", "Pilot_Dogmatic", "Pilot_Discretion", 
                       "Pilot_CognitiveBias", "Pilot_MotivatedBias", "Pilot_BiasMitigating", "Judge_Stability", 
