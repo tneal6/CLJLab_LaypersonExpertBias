@@ -385,3 +385,36 @@ df_long2 <- df_long1 %>%
                               Restaurant_Stability = "Restaurant_Critic", 
                               Human_Resource_Stability = "HR_Agent", Election_Stability = "Election"))
 
+#creates objectivity score
+df_long3 <- df_long2%>%
+  group_by(Expert_Type, Subject)%>%
+  summarize(objectivity_score = mean(Cognitive_Bias, Motivated_Bias))
+
+df_long2 <- df_long2%>%
+  group_by(Expert_Type, Subject)
+  
+df_long4 <- cbind(df_long2,df_long3)
+df_long4$Subject1 <- NULL
+df_long4$Expert_Type1 <- NULL
+
+#Hypothesis 1: We expect that people will believe experts are largely protected against bias (i.e., an illusion of objectivity in experts)
+summary(df_long4$objectivity_score)
+
+#Hypothesis 2: We expect people will perceive experts as more objective when they perceive expert domains as yielding more accurate judgments.
+hypothesis_2 <- lm(objectivity_score ~ Accuracy, data = df_long4)
+
+#Hypothesis 3: As people perceive expertise to increase, we expect perceptions of expert objectivity to also increase (i.e., we expect people will conflate expertise with objectivity). 
+hypothesis_3 <- lm(objectivity_score ~ Training, data = df_long4)
+
+#Hypothesis 4: We expect to observe consequences of the illusion of objectivity and conflation of expertise with objectivity. Specifically, we expect that as people perceive experts as having more expertise, they will (a) rate as lower the usefulness of bias mitigating procedures, and (b) consistent with the Earned Dogmatism Hypothesis, endorse closemindedness and dogmatism as more appropriate for experts.  We think these patterns in a and b will replicate as people perceive experts to be more objective. 
+#CHECK WHICH VARIABLE IS CLOSE MINDED
+hypothesis_4.1 <- lm(Bias_Mitigating ~ Training, data = df_long4)
+hypothesis_4.2 <- lm(Accuracy ~ Training, data = df_long4)
+hypothesis_4.3 <- lm(Dogmatic ~ Training, data = df_long4)
+hypothesis_4.4 <- lm(Accuracy ~ objectivity_score, data = df_long4)
+hypothesis_4.5 <- lm(Dogmatic ~ objectivity_score, data = df_long4)
+
+#Hypothesis 5: We expect people will perceive experts as more objective when they perceive domains as having more stable environmental cues, and when they perceive domains as providing clearer feedback. 
+hypothesis_5.1 <- lm(objectivity_score ~ Stability, data = df_long4)
+hypothesis_5.2 <- lm(objectivity_score ~ Clarity, data = df_long4)
+
