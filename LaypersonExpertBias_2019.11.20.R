@@ -385,72 +385,64 @@ df_long2 <- df_long1 %>%
                               Restaurant_Stability = "Restaurant_Critic", 
                               Human_Resource_Stability = "HR_Agent", Election_Stability = "Election"))
 
-#creates objectivity score - this is a combination of two items. In a previous 
-#dataset (R. Velez thesis), these two items were highly correlated (r=.794). As
-#a two-item scale they had a cronbach's alpha of .882. They are "Cognitive_Bias" 
-#= "When [experts] make judgments as part of their work, to what extent are 
-#those judgments influenced by their expectations,preconceptions, and intutions 
-#(rather than reflecting a rational analysis of the facts? and "Motivated_Bias" 
-#= "When [experts] make judgments as part of their work, how much are those 
-#judments motivated by a desire to protect (or boost) their reputation, ego,
-#or self-interest?"
+#creates objectivity score
 df_long3 <- df_long2%>%
-  group_by(Expert_Type, Subject)%>%
-  summarize(objectivity_score = mean(Cognitive_Bias, Motivated_Bias))
+  mutate(Objectivity = (Cognitive_Bias + Motivated_Bias) / 2)
 
-df_long2 <- df_long2%>%
-  group_by(Expert_Type, Subject)
-  
-df_long4 <- cbind(df_long2,df_long3)
-df_long4$Subject1 <- NULL
-df_long4$Expert_Type1 <- NULL
 
-#Hypothesis 1: We expect that people will believe experts are largely protected 
-#against bias #(i.e., an illusion of objectivity in experts)
-summary(df_long4$objectivity_score)
+#Hypothesis 1: We expect that people will believe experts are largely protected against bias (i.e., an illusion of objectivity in experts)
+H1_table <- df_long3 %>%
+  summarise(mean_obj = mean(Objectivity, na.rm = TRUE),
+            sd_obj = sd(Objectivity, na.rm = TRUE))
 
-#Hypothesis 2: We expect people will perceive experts as more objective when 
-#they perceive expert domains as yielding more accurate judgments.
-hypothesis_2 <- lm(objectivity_score ~ Accuracy, data = df_long4)
+H1_experts_table <- df_long3 %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_obj = mean(Objectivity, na.rm = TRUE),
+            sd_obj = sd(Objectivity, na.rm = TRUE))
 
-#Hypothesis 3: As people perceive expertise to increase, we expect perceptions 
-#of expert objectivity to also increase (i.e., we expect people will conflate 
-#expertise with objectivity). 
-hypothesis_3 <- lm(objectivity_score ~ Training, data = df_long4)
+#Hypothesis 2: We expect people will perceive experts as more objective when they 
+#perceive expert domains as yielding more accurate judgments.
+hypothesis_2 <- lm(Objectivity ~ Accuracy, data = df_long3)
+
+#Hypothesis 3: As people perceive expertise to increase, we expect perceptions of 
+#expert objectivity to also increase (i.e., we expect people will conflate expertise with objectivity). 
+hypothesis_3 <- lm(Objectivity ~ Training, data = df_long3)
 
 #Hypothesis 4: We expect to observe consequences of the illusion of objectivity 
 #and conflation of expertise with objectivity. Specifically, we expect that as 
 #people perceive experts as having more expertise, they will (a) rate as lower 
-#the usefulness of bias mitigating procedures, and (b) consistent with the 
-#Earned Dogmatism Hypothesis, endorse closemindedness and dogmatism as more 
-#appropriate for experts.  We think these patterns in a and b will replicate 
-#as people perceive experts to be more objective. 
-hypothesis_4.a <- lm(Bias_Mitigating ~ Training, data = df_long4)
-hypothesis_4.b <- lm(Dogmatic ~ Training, data = df_long4)
-hypothesis_4.a2 <- lm(Bias_Mitigating ~ objectivity_score, data = df_long4)
-hypothesis_4.b2 <- lm(Dogmatic ~ objectivity_score, data = df_long4)
+#the usefulness of bias mitigating procedures, and (b) consistent with the Earned 
+#Dogmatism Hypothesis, endorse closemindedness and dogmatism as more appropriate for experts.  
+#We think these patterns in a and b will replicate as people perceive experts to be more objective. 
+#CHECK WHICH VARIABLE IS CLOSE MINDED
+hypothesis_4.1 <- lm(Bias_Mitigating ~ Training, data = df_long3)
+hypothesis_4.2 <- lm(Accuracy ~ Training, data = df_long3)
+hypothesis_4.3 <- lm(Dogmatic ~ Training, data = df_long3)
+hypothesis_4.4 <- lm(Accuracy ~ Objectivity, data = df_long3)
+hypothesis_4.5 <- lm(Dogmatic ~ Objectivity, data = df_long3)
 
 #Hypothesis 5: We expect people will perceive experts as more objective when 
-#they perceive domains as having more stable environmental cues, and when they
-# perceive domains as providing clearer feedback. 
-hypothesis_5.1 <- lm(objectivity_score ~ Stability, data = df_long4)
-hypothesis_5.2 <- lm(objectivity_score ~ Clarity, data = df_long4)
+#they perceive domains as having more stable environmental cues, and when they 
+#perceive domains as providing clearer feedback. 
+hypothesis_5.1 <- lm(Objectivity ~ Stability, data = df_long3)
+hypothesis_5.2 <- lm(Objectivity ~ Clarity, data = df_long3)
 
 #Hypothesis 6: We expect people will perceive experts as more objective when 
 #they perceive domains as allowing for less discretion. 
-hypothesis_6 <- lm(objectivity_score ~ Discretion, data = df_long4)
+hypothesis_6 <- lm(Objectivity ~ Discretion, data = df_long3)
 
 #Hypothesis 7: We expect people will perceive experts as more objective when 
 #they are less familiar with  the expert domain.
-hypothesis_7 <- lm(objectivity_score ~ Contact, data = df_long4)
+hypothesis_7 <- lm(Objectivity ~ Contact, data = df_long3)
 
 #Hypothesis 8: We expect people will perceive experts as more objective when 
 #they like experts more
-hypothesis_8 <- lm(objectivity_score ~ Like, data = df_long4)
+hypothesis_8 <- lm(Objectivity ~ Like, data = df_long3)
 
 #Hypothesis 9: We expect people will perceive experts as more objective when 
 # they have lower experiences of disagreement  with experts in a field.
-hypothesis_9 <- lm(objectivity_score ~ Disagree, data = df_long4)
+hypothesis_9 <- lm(Objectivity ~ Disagree, data = df_long3)
 
 #Hypothesis 10: We expect that people who score higher on the Naïve Realism 
 #Scale will impute more bias in experts than those who score lower on the scale
+
