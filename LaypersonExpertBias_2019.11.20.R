@@ -386,6 +386,15 @@ df_long2 <- df_long1 %>%
                               Human_Resource_Stability = "HR_Agent", Election_Stability = "Election"))
 
 #creates objectivity score
+  #this is a combination of two items. In a previous 
+  #dataset (R. Velez thesis), these two items were highly correlated (r=.794). As
+  #a two-item scale they had a cronbach's alpha of .882. They are "Cognitive_Bias" 
+  #= "When [experts] make judgments as part of their work, to what extent are 
+  #those judgments influenced by their expectations,preconceptions, and intutions 
+  #(rather than reflecting a rational analysis of the facts? and "Motivated_Bias" 
+  #= "When [experts] make judgments as part of their work, how much are those 
+  #judments motivated by a desire to protect (or boost) their reputation, ego,
+  #or self-interest?"
 df_long3 <- df_long2%>%
   mutate(Objectivity = (Cognitive_Bias + Motivated_Bias) / 2)
 
@@ -457,17 +466,16 @@ df_long3%>%
 #the usefulness of bias mitigating procedures, and (b) consistent with the Earned 
 #Dogmatism Hypothesis, endorse closemindedness and dogmatism as more appropriate for experts.  
 #We think these patterns in a and b will replicate as people perceive experts to be more objective. 
-#CHECK WHICH VARIABLE IS CLOSE MINDED
-# TODO: Are these models all supposed to be separate? Or should there be a couple
-# models with separate predictors? 
-hypothesis_4.1 <- lm(Bias_Mitigating ~ Training, data = df_long3)
-hypothesis_4.2 <- lm(Accuracy ~ Training, data = df_long3)
-hypothesis_4.3 <- lm(Dogmatic ~ Training, data = df_long3)
-hypothesis_4.4 <- lm(Accuracy ~ Objectivity, data = df_long3)
-hypothesis_4.5 <- lm(Dogmatic ~ Objectivity, data = df_long3)
+hypothesis_4.a <- lm(Bias_Mitigating ~ Training, data = df_long3)
+hypothesis_4.b <- lm(Dogmatic ~ Training, data = df_long3)
+hypothesis_4.a2 <- lm(Bias_Mitigating ~ Objectivity, data = df_long3)
+hypothesis_4.b2 <- lm(Dogmatic ~ Objectivity, data = df_long3)
 
-
-
+# this gives us the regression output that we usually see in SPSS
+summary(hypothesis_4.a)
+summary(hypothesis_4.b)
+summary(hypothesis_4.a2)
+summary(hypothesis_4.b2)
 
 #Hypothesis 5: We expect people will perceive experts as more objective when 
 #they perceive domains as having more stable environmental cues, and when they 
