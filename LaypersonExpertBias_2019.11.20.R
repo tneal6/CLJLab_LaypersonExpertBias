@@ -432,6 +432,16 @@ hypothesis_2 <- lm(Objectivity ~ Accuracy, data = df_long3)
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_2)
 
+# Descriptives for accuracy
+H2_table <- df_long3 %>%
+  summarise(mean_acc = mean(Accuracy, na.rm = TRUE),
+            sd_acc = sd(Accuracy, na.rm = TRUE))
+
+H2_experts_table <- df_long3 %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_acc = mean(Accuracy, na.rm = TRUE),
+            sd_acc = sd(Accuracy, na.rm = TRUE))
+
 # this makes a geom_smooth plot - basically a regression line with shaded error
 # (you'll see for this one our error is really small!)
 df_long3%>%
@@ -449,6 +459,16 @@ hypothesis_3 <- lm(Objectivity ~ Training, data = df_long3)
 
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_3)
+
+# Descriptives for training
+H3_table <- df_long3 %>%
+  summarise(mean_trn = mean(Training, na.rm = TRUE),
+            sd_trn = sd(Training, na.rm = TRUE))
+
+H3_experts_table <- df_long3 %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_trn = mean(Training, na.rm = TRUE),
+            sd_trn = sd(Training, na.rm = TRUE))
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
 df_long3%>%
@@ -477,10 +497,64 @@ summary(hypothesis_4.b)
 summary(hypothesis_4.a2)
 summary(hypothesis_4.b2)
 
+# Descriptives for Bias Mitigating
+H4a_table <- df_long3 %>%
+  summarise(mean_bm = mean(Bias_Mitigating, na.rm = TRUE),
+            sd_bm = sd(Bias_Mitigating, na.rm = TRUE))
+
+H4a_experts_table <- df_long3 %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_bm = mean(Bias_Mitigating, na.rm = TRUE),
+            sd_bm = sd(Bias_Mitigating, na.rm = TRUE))
+
+# this makes a geom_smooth plot - basically a regression line with shaded error
+#for hypothesis 4a2 - (no figure for 4a b/c no relationship)
+df_long3%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(Bias_Mitigating)) %>%
+  ggplot() +
+  geom_smooth(aes(Bias_Mitigating, Objectivity), method = "lm") +
+  scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
+  scale_x_continuous(breaks = c(1:7)) +
+  theme_classic(20)
+
+# Descriptives for Dogmatic
+H4b_table <- df_long3 %>%
+  summarise(mean_dgm = mean(Dogmatic, na.rm = TRUE),
+            sd_dgm = sd(Dogmatic, na.rm = TRUE))
+
+H4b_experts_table <- df_long3 %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_dgm = mean(Dogmatic, na.rm = TRUE),
+            sd_dgm = sd(Dogmatic, na.rm = TRUE))
+
+# this makes a geom_smooth plot - basically a regression line with shaded error
+#hypothesis 4b
+df_long3%>%
+  filter(!is.na(Training)) %>%
+  filter(!is.na(Dogmatic)) %>%
+  ggplot() +
+  geom_smooth(aes(Dogmatic, Training), method = "lm") +
+  scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
+  scale_x_continuous(breaks = c(1:7)) +
+  theme_classic(20)
+
+#hypothesis 4b2
+df_long3%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(Dogmatic)) %>%
+  ggplot() +
+  geom_smooth(aes(Dogmatic, Objectivity), method = "lm") +
+  scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
+  scale_x_continuous(breaks = c(1:7)) +
+  theme_classic(20)
+
 #Hypothesis 5: We expect people will perceive experts as more objective when 
 #they perceive domains as having more stable environmental cues, and when they 
 #perceive domains as providing clearer feedback.
-# TODO: Should these be two separate models or a model with two predictors?  
+# COMMENT TO DELETE: there's nothing special about these two items that should make 
+#them be in one model vs. two. They are two more of the predictors, similar
+#to the others we've inluded. So I [TESS] think they should be separate models.
 hypothesis_5.1 <- lm(Objectivity ~ Stability, data = df_long3)
 hypothesis_5.2 <- lm(Objectivity ~ Clarity, data = df_long3)
 
@@ -488,16 +562,43 @@ hypothesis_5.2 <- lm(Objectivity ~ Clarity, data = df_long3)
 summary(hypothesis_5.1)
 summary(hypothesis_5.2)
 
+# Descriptives for stability
+H5.1_table <- df_long3 %>%
+  summarise(mean_stb = mean(Stability, na.rm = TRUE),
+            sd_stb = sd(Stability, na.rm = TRUE))
+
+H5.1_experts_table <- df_long3 %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_stb = mean(Stability, na.rm = TRUE),
+            sd_stb = sd(Stability, na.rm = TRUE))
+
+# Descriptives for Clarity
+H5.2_table <- df_long3 %>%
+  summarise(mean_cla = mean(Clarity, na.rm = TRUE),
+            sd_cla = sd(Clarity, na.rm = TRUE))
+
+H5.2_experts_table <- df_long3 %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_cla = mean(Clarity, na.rm = TRUE),
+            sd_cla = sd(Clarity, na.rm = TRUE))
+
 # this makes a geom_smooth plot - basically a regression line with shaded error
-# I put both predictors on this graph, specified by color. Probably not the 
-# best way to do it but it works for now! -EL
+#Stability plot-Hyp 5.1
 df_long3%>%
   filter(!is.na(Objectivity)) %>%
   filter(!is.na(Stability)) %>%
   ggplot() +
-  geom_smooth(aes(Stability, Objectivity), method = "lm", fill = "blue") +
-  geom_smooth(aes(Clarity, Objectivity), method = "lm", color = "dark green", fill = "dark green") +
-  xlab(label = "Stability (blue) and Clarity (green)") + 
+  geom_smooth(aes(Stability, Objectivity), method = "lm") +
+  scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
+  scale_x_continuous(breaks = c(1:7)) +
+  theme_classic(20)
+
+#Clarity plot - Hyp 5.2
+df_long3%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(Clarity)) %>%
+  ggplot() +
+  geom_smooth(aes(Clarity, Objectivity), method = "lm") +
   scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
   scale_x_continuous(breaks = c(1:7)) +
   theme_classic(20)
@@ -508,6 +609,16 @@ hypothesis_6 <- lm(Objectivity ~ Discretion, data = df_long3)
 
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_6)
+
+# Descriptives for Discretion
+H6_table <- df_long3 %>%
+  summarise(mean_dsc = mean(Discretion, na.rm = TRUE),
+            sd_dsc = sd(Discretion, na.rm = TRUE))
+
+H6_experts_table <- df_long3 %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_dsc = mean(Discretion, na.rm = TRUE),
+            sd_dsc = sd(Discretion, na.rm = TRUE))
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
 df_long3%>%
@@ -526,6 +637,16 @@ hypothesis_7 <- lm(Objectivity ~ Contact, data = df_long3)
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_7)
 
+# Descriptives for Contact
+H7_table <- df_long3 %>%
+  summarise(mean_con = mean(Contact, na.rm = TRUE),
+            sd_con = sd(Contact, na.rm = TRUE))
+
+H7_experts_table <- df_long3 %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_con = mean(Contact, na.rm = TRUE),
+            sd_con = sd(Contact, na.rm = TRUE))
+
 # this makes a geom_smooth plot - basically a regression line with shaded error
 df_long3%>%
   filter(!is.na(Objectivity)) %>%
@@ -543,6 +664,16 @@ hypothesis_8 <- lm(Objectivity ~ Like, data = df_long3)
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_8)
 
+# Descriptives for Like
+H8_table <- df_long3 %>%
+  summarise(mean_lik = mean(Like, na.rm = TRUE),
+            sd_lik = sd(Like, na.rm = TRUE))
+
+H8_experts_table <- df_long3 %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_lik = mean(Like, na.rm = TRUE),
+            sd_lik = sd(Like, na.rm = TRUE))
+
 # this makes a geom_smooth plot - basically a regression line with shaded error
 df_long3%>%
   filter(!is.na(Objectivity)) %>%
@@ -559,6 +690,16 @@ hypothesis_9 <- lm(Objectivity ~ Disagree, data = df_long3)
 
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_9)
+
+# Descriptives for Disagree
+H9_table <- df_long3 %>%
+  summarise(mean_dis = mean(Disagree, na.rm = TRUE),
+            sd_dis = sd(Disagree, na.rm = TRUE))
+
+H9_experts_table <- df_long3 %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_dis = mean(Disagree, na.rm = TRUE),
+            sd_dis = sd(Disagree, na.rm = TRUE))
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
 df_long3%>%
