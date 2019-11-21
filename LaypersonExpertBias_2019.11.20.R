@@ -713,4 +713,42 @@ df_long3%>%
 
 #Hypothesis 10: We expect that people who score higher on the Naïve Realism 
 #Scale will impute more bias in experts than those who score lower on the scale
+#TODO: score the Naive Realism Scale - see email from Nate Cheek with scoring instructions
+#name the total scaled variable for the Objectivity subscale "NRS_Objectivity"
+#name the total scaled variable for the Disagreement subscale "NRS_Disagreement"
+hypothesis_10 <- lm(Objectivity ~ NRS_Objectivity + NRS_Disagreement, data = df_long3)
 
+# this gives us the regression output that we usually see in SPSS
+summary(hypothesis_10)
+
+# Descriptives for NRS Subscales - Objectivity subscale first
+H10a_table <- df_long3 %>%
+  summarise(mean_NRS_0 = mean(Objectivity, na.rm = TRUE),
+            sd_NRS_0 = sd(Objectivity, na.rm = TRUE))
+H10a_experts_table <- df_long3 %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_NRS_0 = mean(Objectivity, na.rm = TRUE),
+            sd_NRS_0 = sd(Objectivity, na.rm = TRUE))
+
+# Descriptives for NRS Subscales - Disagreement subscale second
+H10b_table <- df_long3 %>%
+  summarise(mean_NRS_D = mean(Objectivity, na.rm = TRUE),
+            sd_NRS_D = sd(Objectivity, na.rm = TRUE))
+H10b_experts_table <- df_long3 %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_NRS_D = mean(Objectivity, na.rm = TRUE),
+            sd_NRS_D = sd(Objectivity, na.rm = TRUE))
+
+# this makes a geom_smooth plot - basically a regression line with shaded error
+# I put both predictors on this graph, specified by color. May not be the 
+# best way to do it but it works for now! -TN copied EL code for Hyp 5 in earlier draft of script:)
+df_long3%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(NRS_Objectivity)) %>%
+  ggplot() +
+  geom_smooth(aes(NRS_Objectivity, Objectivity), method = "lm", fill = "blue") +
+  geom_smooth(aes(NRS_Disagreement, Objectivity), method = "lm", color = "dark green", fill = "dark green") +
+  xlab(label = "NRS_Objectivity (blue) and NRS_Disagreement (green)") + 
+  scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
+  scale_x_continuous(breaks = c(1:7)) +
+  theme_classic(20)
