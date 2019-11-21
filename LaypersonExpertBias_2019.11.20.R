@@ -400,13 +400,56 @@ H1_experts_table <- df_long3 %>%
   summarise(mean_obj = mean(Objectivity, na.rm = TRUE),
             sd_obj = sd(Objectivity, na.rm = TRUE))
 
+# this creates a bar plot with standard error bars of the average 
+# objectivity score per expert type (you'll need to press zoom to see 
+# the full graph)
+df_long3 %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_obj = mean(Objectivity, na.rm = TRUE),
+            sd_obj = sd(Objectivity, na.rm = TRUE)) %>%
+  ggplot() + 
+  coord_cartesian (ylim = c(1, 7), xlim = c(1, 7)) +
+  ylab(label = "Objectivity Score") + 
+  xlab(label = "Expert Type") + 
+  geom_bar(aes(Expert_Type, mean_obj), stat = "identity", color = "light gray", fill = "light gray") +
+  geom_errorbar(aes(x = Expert_Type, ymin=mean_obj - (sd_obj/sqrt(nrow(H1_experts_table))), 
+                    ymax = mean_obj + (sd_obj/sqrt(nrow(H1_experts_table))))) +
+  theme_classic(20) 
+
 #Hypothesis 2: We expect people will perceive experts as more objective when they 
 #perceive expert domains as yielding more accurate judgments.
 hypothesis_2 <- lm(Objectivity ~ Accuracy, data = df_long3)
 
+# this gives us the regression output that we usually see in SPSS
+summary(hypothesis_2)
+
+# this makes a geom_smooth plot - basically a regression line with shaded error
+# (you'll see for this one our error is really small!)
+df_long3%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(Accuracy)) %>%
+  ggplot() +
+  geom_smooth(aes(Accuracy, Objectivity), method = "lm") +
+  scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
+  scale_x_continuous(breaks = c(1:7)) +
+  theme_classic(20)
+
 #Hypothesis 3: As people perceive expertise to increase, we expect perceptions of 
 #expert objectivity to also increase (i.e., we expect people will conflate expertise with objectivity). 
 hypothesis_3 <- lm(Objectivity ~ Training, data = df_long3)
+
+# this gives us the regression output that we usually see in SPSS
+summary(hypothesis_3)
+
+# this makes a geom_smooth plot - basically a regression line with shaded error
+df_long3%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(Training)) %>%
+  ggplot() +
+  geom_smooth(aes(Training, Objectivity), method = "lm") +
+  scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
+  scale_x_continuous(breaks = c(1:7)) +
+  theme_classic(20)
 
 #Hypothesis 4: We expect to observe consequences of the illusion of objectivity 
 #and conflation of expertise with objectivity. Specifically, we expect that as 
@@ -415,33 +458,109 @@ hypothesis_3 <- lm(Objectivity ~ Training, data = df_long3)
 #Dogmatism Hypothesis, endorse closemindedness and dogmatism as more appropriate for experts.  
 #We think these patterns in a and b will replicate as people perceive experts to be more objective. 
 #CHECK WHICH VARIABLE IS CLOSE MINDED
+# TODO: Are these models all supposed to be separate? Or should there be a couple
+# models with separate predictors? 
 hypothesis_4.1 <- lm(Bias_Mitigating ~ Training, data = df_long3)
 hypothesis_4.2 <- lm(Accuracy ~ Training, data = df_long3)
 hypothesis_4.3 <- lm(Dogmatic ~ Training, data = df_long3)
 hypothesis_4.4 <- lm(Accuracy ~ Objectivity, data = df_long3)
 hypothesis_4.5 <- lm(Dogmatic ~ Objectivity, data = df_long3)
 
+
+
+
 #Hypothesis 5: We expect people will perceive experts as more objective when 
 #they perceive domains as having more stable environmental cues, and when they 
-#perceive domains as providing clearer feedback. 
+#perceive domains as providing clearer feedback.
+# TODO: Should these be two separate models or a model with two predictors?  
 hypothesis_5.1 <- lm(Objectivity ~ Stability, data = df_long3)
 hypothesis_5.2 <- lm(Objectivity ~ Clarity, data = df_long3)
+
+# this gives us the regression output that we usually see in SPSS
+summary(hypothesis_5.1)
+summary(hypothesis_5.2)
+
+# this makes a geom_smooth plot - basically a regression line with shaded error
+# I put both predictors on this graph, specified by color. Probably not the 
+# best way to do it but it works for now! -EL
+df_long3%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(Stability)) %>%
+  ggplot() +
+  geom_smooth(aes(Stability, Objectivity), method = "lm", fill = "blue") +
+  geom_smooth(aes(Clarity, Objectivity), method = "lm", color = "dark green", fill = "dark green") +
+  xlab(label = "Stability (blue) and Clarity (green)") + 
+  scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
+  scale_x_continuous(breaks = c(1:7)) +
+  theme_classic(20)
 
 #Hypothesis 6: We expect people will perceive experts as more objective when 
 #they perceive domains as allowing for less discretion. 
 hypothesis_6 <- lm(Objectivity ~ Discretion, data = df_long3)
 
+# this gives us the regression output that we usually see in SPSS
+summary(hypothesis_6)
+
+# this makes a geom_smooth plot - basically a regression line with shaded error
+df_long3%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(Discretion)) %>%
+  ggplot() +
+  geom_smooth(aes(Discretion, Objectivity), method = "lm") +
+  scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
+  scale_x_continuous(breaks = c(1:7)) +
+  theme_classic(20)
+
 #Hypothesis 7: We expect people will perceive experts as more objective when 
 #they are less familiar with  the expert domain.
 hypothesis_7 <- lm(Objectivity ~ Contact, data = df_long3)
+
+# this gives us the regression output that we usually see in SPSS
+summary(hypothesis_7)
+
+# this makes a geom_smooth plot - basically a regression line with shaded error
+df_long3%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(Contact)) %>%
+  ggplot() +
+  geom_smooth(aes(Contact, Objectivity), method = "lm") +
+  scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
+  scale_x_continuous(breaks = c(1:7)) +
+  theme_classic(20)
 
 #Hypothesis 8: We expect people will perceive experts as more objective when 
 #they like experts more
 hypothesis_8 <- lm(Objectivity ~ Like, data = df_long3)
 
+# this gives us the regression output that we usually see in SPSS
+summary(hypothesis_8)
+
+# this makes a geom_smooth plot - basically a regression line with shaded error
+df_long3%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(Like)) %>%
+  ggplot() +
+  geom_smooth(aes(Like, Objectivity), method = "lm") +
+  scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
+  scale_x_continuous(breaks = c(1:7)) +
+  theme_classic(20)
+
 #Hypothesis 9: We expect people will perceive experts as more objective when 
 # they have lower experiences of disagreement  with experts in a field.
 hypothesis_9 <- lm(Objectivity ~ Disagree, data = df_long3)
+
+# this gives us the regression output that we usually see in SPSS
+summary(hypothesis_9)
+
+# this makes a geom_smooth plot - basically a regression line with shaded error
+df_long3%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(Disagree)) %>%
+  ggplot() +
+  geom_smooth(aes(Disagree, Objectivity), method = "lm") +
+  scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
+  scale_x_continuous(breaks = c(1:7)) +
+  theme_classic(20)
 
 #Hypothesis 10: We expect that people who score higher on the Naïve Realism 
 #Scale will impute more bias in experts than those who score lower on the scale
