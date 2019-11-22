@@ -3,7 +3,6 @@ library(tidyverse)
 library(dplyr)
 library(data.table)
 library(readr)
-library(car)
 
 ## Import the data (Percepts of Expert Bias Datset_Functional Dataset - CSV)
  df <- Percepts_of_Expert_Bias_Dataset_Functional_Dataset
@@ -387,25 +386,10 @@ df_long2 <- df_long1 %>%
                               Human_Resource_Stability = "HR_Agent", Election_Stability = "Election"))
 
 
-#reverse scoring the objectivity scale
-df_long3 <- df_long2%>%
-  mutate(Cognitive_Bias = replace(Cognitive_Bias,Cognitive_Bias == 1, 7))%>%
-  mutate(Motivated_Bias=replace(Motivated_Bias,Motivated_Bias==1, 7))%>%
-  mutate(Cognitive_Bias=replace(Cognitive_Bias,Cognitive_Bias==2, 6))%>%
-  mutate(Motivated_Bias = replace(Motivated_Bias, Motivated_Bias == 2, 6))%>%
-  mutate(Cognitive_Bias = replace(Cognitive_Bias, Cognitive_Bias == 3, 5))%>%
-  mutate(Motivated_Bias = replace(Motivated_Bias, Motivated_Bias == 3, 5))%>%
-  mutate(Cognitive_Bias = replace(Cognitive_Bias, Cognitive_Bias == 4, 4))%>%
-  mutate(Motivated_Bias = replace(Motivated_Bias, Motivated_Bias == 4, 4))%>%
-  mutate(Cognitive_Bias = replace(Cognitive_Bias, Cognitive_Bias == 5, 3))%>%
-  mutate(Motivated_Bias = replace(Motivated_Bias, Motivated_Bias == 5, 3))%>%
-  mutate(Cognitive_Bias = replace(Cognitive_Bias, Cognitive_Bias == 6, 2))%>%
-  mutate(Motivated_Bias = replace(Motivated_Bias, Motivated_Bias == 6, 2))%>%
-  mutate(Cognitive_Bias = replace(Cognitive_Bias, Cognitive_Bias == 7, 1))%>%
-  mutate(Motivated_Bias = replace(Motivated_Bias, Motivated_Bias == 7, 1))
- 
-df_long3 <- df_long2 %>%
-  recode(Cognitive_Bias, '1=7, 2=6, 3=5, 4=4, 5=3, 6=2, 7=1')
+df_long2 <- as.data.frame(df_long2)
+
+df_long3 <- df_long2$recode(Cognitive_Bias, '1=7; 2=6; 3=5; 4=4; 5=3; 6=2; 7=1')%>%
+ recode(Motivated_Bias, '1=7; 2=6; 3=5; 4=4; 5=3; 6=2; 7=1')
 
 #creates objectivity score
 #this is a combination of two items. In a previous 
