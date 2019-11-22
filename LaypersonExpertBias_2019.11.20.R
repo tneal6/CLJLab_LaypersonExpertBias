@@ -399,7 +399,7 @@ df_long3 <- df_long2%>%
   mutate(Objectivity = (Cognitive_Bias + Motivated_Bias) / 2)
 
 #reverse scoring the objectivity scale
-df_long3 <- df_long3%>%
+df_long4 <- df_long3%>%
   mutate(Objectivity = replace(Objectivity,Objectivity == 1, 7))%>%
   mutate(Objectivity=replace(Objectivity,Objectivity==1.5, 6.5))%>%
   mutate(Objectivity=replace(Objectivity,Objectivity==2, 6))%>%
@@ -416,21 +416,21 @@ df_long3 <- df_long3%>%
   
   #creating objectivity NRS and Disagreement NRS
   
-df_long3 <- df_long3 %>%
+df_long4 <- df_long4 %>%
   mutate(NRS_Objectivity = (NRS4 + NRS5 + NRS7 + NRS8 + NRS9) / 5)
 
-df_long3 <- df_long3%>%
+df_long4 <- df_long4%>%
   mutate(NRS_Disagreement = (NRS1 + NRS2 + NRS3 + NRS6 + NRS8 + NRS10) / 6)
 
-df_long3 <- df_long3%>%
+df_long4 <- df_long4%>%
   mutate(NRS_Total = (NRS1 + NRS2 + NRS3 + NRS4 + NRS5 +NRS6 + NRS7+ NRS8 + NRS9+ NRS10 + NRS11) /11)
 
 #Hypothesis 1: We expect that people will believe experts are largely protected against bias (i.e., an illusion of objectivity in experts)
-H1_table <- df_long3 %>%
+H1_table <- df_long4 %>%
   summarise(mean_obj = mean(Objectivity, na.rm = TRUE),
             sd_obj = sd(Objectivity, na.rm = TRUE))
 
-H1_experts_table <- df_long3 %>%
+H1_experts_table <- df_long4 %>%
   group_by(Expert_Type) %>%
   summarise(mean_obj = mean(Objectivity, na.rm = TRUE),
             sd_obj = sd(Objectivity, na.rm = TRUE))
@@ -439,7 +439,7 @@ H1_experts_table <- df_long3 %>%
 # objectivity score per expert type (you'll need to press zoom to see 
 # the full graph)
 
-df_long3 %>%
+df_long4 %>%
   group_by(Expert_Type) %>%
   summarise(mean_obj = mean(Objectivity, na.rm = TRUE),
             sd_obj = sd(Objectivity, na.rm = TRUE)) %>%
@@ -457,24 +457,24 @@ df_long3 %>%
 
 #Hypothesis 2: We expect people will perceive experts as more objective when they 
 #perceive expert domains as yielding more accurate judgments.
-hypothesis_2 <- lm(Objectivity ~ Accuracy, data = df_long3)
+hypothesis_2 <- lm(Objectivity ~ Accuracy, data = df_long4)
 
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_2)
 
 # Descriptives for accuracy
-H2_table <- df_long3 %>%
+H2_table <- df_long4 %>%
   summarise(mean_acc = mean(Accuracy, na.rm = TRUE),
             sd_acc = sd(Accuracy, na.rm = TRUE))
 
-H2_experts_table <- df_long3 %>%
+H2_experts_table <- df_long4 %>%
   group_by(Expert_Type) %>%
   summarise(mean_acc = mean(Accuracy, na.rm = TRUE),
             sd_acc = sd(Accuracy, na.rm = TRUE))
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
 # (you'll see for this one our error is really small!)
-df_long3%>%
+df_long4%>%
   filter(!is.na(Objectivity)) %>%
   filter(!is.na(Accuracy)) %>%
   ggplot() +
@@ -485,23 +485,23 @@ df_long3%>%
 
 #Hypothesis 3: As people perceive expertise to increase, we expect perceptions of 
 #expert objectivity to also increase (i.e., we expect people will conflate expertise with objectivity). 
-hypothesis_3 <- lm(Objectivity ~ Training, data = df_long3)
+hypothesis_3 <- lm(Objectivity ~ Training, data = df_long4)
 
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_3)
 
 # Descriptives for training
-H3_table <- df_long3 %>%
+H3_table <- df_long4 %>%
   summarise(mean_trn = mean(Training, na.rm = TRUE),
             sd_trn = sd(Training, na.rm = TRUE))
 
-H3_experts_table <- df_long3 %>%
+H3_experts_table <- df_long4 %>%
   group_by(Expert_Type) %>%
   summarise(mean_trn = mean(Training, na.rm = TRUE),
             sd_trn = sd(Training, na.rm = TRUE))
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
-df_long3%>%
+df_long4%>%
   filter(!is.na(Objectivity)) %>%
   filter(!is.na(Training)) %>%
   ggplot() +
@@ -516,10 +516,10 @@ df_long3%>%
 #the usefulness of bias mitigating procedures, and (b) consistent with the Earned 
 #Dogmatism Hypothesis, endorse closemindedness and dogmatism as more appropriate for experts.  
 #We think these patterns in a and b will replicate as people perceive experts to be more objective. 
-hypothesis_4.a <- lm(Bias_Mitigating ~ Training, data = df_long3)
-hypothesis_4.b <- lm(Dogmatic ~ Training, data = df_long3)
-hypothesis_4.a2 <- lm(Bias_Mitigating ~ Objectivity, data = df_long3)
-hypothesis_4.b2 <- lm(Dogmatic ~ Objectivity, data = df_long3)
+hypothesis_4.a <- lm(Bias_Mitigating ~ Training, data = df_long4)
+hypothesis_4.b <- lm(Dogmatic ~ Training, data = df_long4)
+hypothesis_4.a2 <- lm(Bias_Mitigating ~ Objectivity, data = df_long4)
+hypothesis_4.b2 <- lm(Dogmatic ~ Objectivity, data = df_long4)
 
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_4.a)
@@ -528,18 +528,18 @@ summary(hypothesis_4.a2)
 summary(hypothesis_4.b2)
 
 # Descriptives for Bias Mitigating
-H4a_table <- df_long3 %>%
+H4a_table <- df_long4 %>%
   summarise(mean_bm = mean(Bias_Mitigating, na.rm = TRUE),
             sd_bm = sd(Bias_Mitigating, na.rm = TRUE))
 
-H4a_experts_table <- df_long3 %>%
+H4a_experts_table <- df_long4 %>%
   group_by(Expert_Type) %>%
   summarise(mean_bm = mean(Bias_Mitigating, na.rm = TRUE),
             sd_bm = sd(Bias_Mitigating, na.rm = TRUE))
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
 #for hypothesis 4a2 - (no figure for 4a b/c no relationship)
-df_long3%>%
+df_long4%>%
   filter(!is.na(Objectivity)) %>%
   filter(!is.na(Bias_Mitigating)) %>%
   ggplot() +
@@ -549,18 +549,18 @@ df_long3%>%
   theme_classic(20)
 
 # Descriptives for Dogmatic
-H4b_table <- df_long3 %>%
+H4b_table <- df_long4 %>%
   summarise(mean_dgm = mean(Dogmatic, na.rm = TRUE),
             sd_dgm = sd(Dogmatic, na.rm = TRUE))
 
-H4b_experts_table <- df_long3 %>%
+H4b_experts_table <- df_long4 %>%
   group_by(Expert_Type) %>%
   summarise(mean_dgm = mean(Dogmatic, na.rm = TRUE),
             sd_dgm = sd(Dogmatic, na.rm = TRUE))
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
 #hypothesis 4b
-df_long3%>%
+df_long4%>%
   filter(!is.na(Training)) %>%
   filter(!is.na(Dogmatic)) %>%
   ggplot() +
@@ -570,7 +570,7 @@ df_long3%>%
   theme_classic(20)
 
 #hypothesis 4b2
-df_long3%>%
+df_long4%>%
   filter(!is.na(Objectivity)) %>%
   filter(!is.na(Dogmatic)) %>%
   ggplot() +
@@ -585,36 +585,36 @@ df_long3%>%
 # COMMENT TO DELETE: there's nothing special about these two items that should make 
 #them be in one model vs. two. They are two more of the predictors, similar
 #to the others we've inluded. So I [TESS] think they should be separate models.
-hypothesis_5.1 <- lm(Objectivity ~ Stability, data = df_long3)
-hypothesis_5.2 <- lm(Objectivity ~ Clarity, data = df_long3)
+hypothesis_5.1 <- lm(Objectivity ~ Stability, data = df_long4)
+hypothesis_5.2 <- lm(Objectivity ~ Clarity, data = df_long4)
 
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_5.1)
 summary(hypothesis_5.2)
 
 # Descriptives for stability
-H5.1_table <- df_long3 %>%
+H5.1_table <- df_long4 %>%
   summarise(mean_stb = mean(Stability, na.rm = TRUE),
             sd_stb = sd(Stability, na.rm = TRUE))
 
-H5.1_experts_table <- df_long3 %>%
+H5.1_experts_table <- df_long4 %>%
   group_by(Expert_Type) %>%
   summarise(mean_stb = mean(Stability, na.rm = TRUE),
             sd_stb = sd(Stability, na.rm = TRUE))
 
 # Descriptives for Clarity
-H5.2_table <- df_long3 %>%
+H5.2_table <- df_long4 %>%
   summarise(mean_cla = mean(Clarity, na.rm = TRUE),
             sd_cla = sd(Clarity, na.rm = TRUE))
 
-H5.2_experts_table <- df_long3 %>%
+H5.2_experts_table <- df_long4 %>%
   group_by(Expert_Type) %>%
   summarise(mean_cla = mean(Clarity, na.rm = TRUE),
             sd_cla = sd(Clarity, na.rm = TRUE))
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
 #Stability plot-Hyp 5.1
-df_long3%>%
+df_long4%>%
   filter(!is.na(Objectivity)) %>%
   filter(!is.na(Stability)) %>%
   ggplot() +
@@ -624,7 +624,7 @@ df_long3%>%
   theme_classic(20)
 
 #Clarity plot - Hyp 5.2
-df_long3%>%
+df_long4%>%
   filter(!is.na(Objectivity)) %>%
   filter(!is.na(Clarity)) %>%
   ggplot() +
@@ -635,23 +635,23 @@ df_long3%>%
 
 #Hypothesis 6: We expect people will perceive experts as more objective when 
 #they perceive domains as allowing for less discretion. 
-hypothesis_6 <- lm(Objectivity ~ Discretion, data = df_long3)
+hypothesis_6 <- lm(Objectivity ~ Discretion, data = df_long4)
 
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_6)
 
 # Descriptives for Discretion
-H6_table <- df_long3 %>%
+H6_table <- df_long4 %>%
   summarise(mean_dsc = mean(Discretion, na.rm = TRUE),
             sd_dsc = sd(Discretion, na.rm = TRUE))
 
-H6_experts_table <- df_long3 %>%
+H6_experts_table <- df_long4 %>%
   group_by(Expert_Type) %>%
   summarise(mean_dsc = mean(Discretion, na.rm = TRUE),
             sd_dsc = sd(Discretion, na.rm = TRUE))
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
-df_long3%>%
+df_long4%>%
   filter(!is.na(Objectivity)) %>%
   filter(!is.na(Discretion)) %>%
   ggplot() +
@@ -662,23 +662,23 @@ df_long3%>%
 
 #Hypothesis 7: We expect people will perceive experts as more objective when 
 #they are less familiar with  the expert domain.
-hypothesis_7 <- lm(Objectivity ~ Contact, data = df_long3)
+hypothesis_7 <- lm(Objectivity ~ Contact, data = df_long4)
 
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_7)
 
 # Descriptives for Contact
-H7_table <- df_long3 %>%
+H7_table <- df_long4 %>%
   summarise(mean_con = mean(Contact, na.rm = TRUE),
             sd_con = sd(Contact, na.rm = TRUE))
 
-H7_experts_table <- df_long3 %>%
+H7_experts_table <- df_long4 %>%
   group_by(Expert_Type) %>%
   summarise(mean_con = mean(Contact, na.rm = TRUE),
             sd_con = sd(Contact, na.rm = TRUE))
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
-df_long3%>%
+df_long4%>%
   filter(!is.na(Objectivity)) %>%
   filter(!is.na(Contact)) %>%
   ggplot() +
@@ -689,23 +689,23 @@ df_long3%>%
 
 #Hypothesis 8: We expect people will perceive experts as more objective when 
 #they like experts more
-hypothesis_8 <- lm(Objectivity ~ Like, data = df_long3)
+hypothesis_8 <- lm(Objectivity ~ Like, data = df_long4)
 
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_8)
 
 # Descriptives for Like
-H8_table <- df_long3 %>%
+H8_table <- df_long4 %>%
   summarise(mean_lik = mean(Like, na.rm = TRUE),
             sd_lik = sd(Like, na.rm = TRUE))
 
-H8_experts_table <- df_long3 %>%
+H8_experts_table <- df_long4 %>%
   group_by(Expert_Type) %>%
   summarise(mean_lik = mean(Like, na.rm = TRUE),
             sd_lik = sd(Like, na.rm = TRUE))
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
-df_long3%>%
+df_long4%>%
   filter(!is.na(Objectivity)) %>%
   filter(!is.na(Like)) %>%
   ggplot() +
@@ -716,23 +716,23 @@ df_long3%>%
 
 #Hypothesis 9: We expect people will perceive experts as more objective when 
 # they have lower experiences of disagreement  with experts in a field.
-hypothesis_9 <- lm(Objectivity ~ Disagree, data = df_long3)
+hypothesis_9 <- lm(Objectivity ~ Disagree, data = df_long4)
 
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_9)
 
 # Descriptives for Disagree
-H9_table <- df_long3 %>%
+H9_table <- df_long4 %>%
   summarise(mean_dis = mean(Disagree, na.rm = TRUE),
             sd_dis = sd(Disagree, na.rm = TRUE))
 
-H9_experts_table <- df_long3 %>%
+H9_experts_table <- df_long4 %>%
   group_by(Expert_Type) %>%
   summarise(mean_dis = mean(Disagree, na.rm = TRUE),
             sd_dis = sd(Disagree, na.rm = TRUE))
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
-df_long3%>%
+df_long4%>%
   filter(!is.na(Objectivity)) %>%
   filter(!is.na(Disagree)) %>%
   ggplot() +
@@ -746,25 +746,25 @@ df_long3%>%
 #TODO: score the Naive Realism Scale - see email from Nate Cheek with scoring instructions
 #name the total scaled variable for the Objectivity subscale "NRS_Objectivity"
 #name the total scaled variable for the Disagreement subscale "NRS_Disagreement"
-hypothesis_10 <- lm(Objectivity ~ NRS_Objectivity + NRS_Disagreement, data = df_long3)
+hypothesis_10 <- lm(Objectivity ~ NRS_Objectivity + NRS_Disagreement, data = df_long4)
 
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_10)
 
 # Descriptives for NRS Subscales - Objectivity subscale first
-H10a_table <- df_long3 %>%
+H10a_table <- df_long4 %>%
   summarise(mean_NRS_0 = mean(Objectivity, na.rm = TRUE),
             sd_NRS_0 = sd(Objectivity, na.rm = TRUE))
-H10a_experts_table <- df_long3 %>%
+H10a_experts_table <- df_long4 %>%
   group_by(Expert_Type) %>%
   summarise(mean_NRS_0 = mean(Objectivity, na.rm = TRUE),
             sd_NRS_0 = sd(Objectivity, na.rm = TRUE))
 
 # Descriptives for NRS Subscales - Disagreement subscale second
-H10b_table <- df_long3 %>%
+H10b_table <- df_long4 %>%
   summarise(mean_NRS_D = mean(Objectivity, na.rm = TRUE),
             sd_NRS_D = sd(Objectivity, na.rm = TRUE))
-H10b_experts_table <- df_long3 %>%
+H10b_experts_table <- df_long4 %>%
   group_by(Expert_Type) %>%
   summarise(mean_NRS_D = mean(Objectivity, na.rm = TRUE),
             sd_NRS_D = sd(Objectivity, na.rm = TRUE))
@@ -772,7 +772,7 @@ H10b_experts_table <- df_long3 %>%
 # this makes a geom_smooth plot - basically a regression line with shaded error
 # I put both predictors on this graph, specified by color. May not be the 
 # best way to do it but it works for now! -TN copied EL code for Hyp 5 in earlier draft of script:)
-df_long3%>%
+df_long4%>%
   filter(!is.na(Objectivity)) %>%
   filter(!is.na(NRS_Objectivity)) %>%
   ggplot() +
