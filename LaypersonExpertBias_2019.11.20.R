@@ -445,10 +445,12 @@ df_long4 %>%
   coord_flip() +
   theme_classic()
 
-
+library(lmerTest)
 #Hypothesis 2: We expect people will perceive experts as more objective when they 
 #perceive expert domains as yielding more accurate judgments.
 hypothesis_2 <- lm(Objectivity ~ Accuracy, data = df_long4)
+hyp2.lm <- lmer(Objectivity ~ Accuracy + (1|Subject), data = df_long4)
+summary(hyp2.lm)
 
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_2)
@@ -465,7 +467,7 @@ H2_experts_table <- df_long4 %>%
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
 # (you'll see for this one our error is really small!)
-df_long3%>%
+df_long4%>%
   filter(!is.na(Objectivity)) %>%
   filter(!is.na(Accuracy)) %>%
   ggplot() +
@@ -677,6 +679,12 @@ df_long4%>%
   scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
   scale_x_continuous(breaks = c(1:7)) +
   theme_classic(20)
+
+
+df_long4 %>%
+  ggplot() +
+  geom_histogram(aes(Contact))
+  theme_classic()
 
 #Hypothesis 8: We expect people will perceive experts as more objective when 
 #they like experts more
