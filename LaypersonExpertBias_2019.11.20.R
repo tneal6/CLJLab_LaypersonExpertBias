@@ -386,10 +386,11 @@ df_long2 <- df_long1 %>%
                               Human_Resource_Stability = "HR_Agent", Election_Stability = "Election"))
 
 
-df_long2 <- as.data.frame(df_long2)
+# Recodes Cognitive Bias and Motivated Bias to be reverse coded - creates new variables for this. 
 
-df_long3 <- df_long2$recode(Cognitive_Bias, '1=7; 2=6; 3=5; 4=4; 5=3; 6=2; 7=1')%>%
- recode(Motivated_Bias, '1=7; 2=6; 3=5; 4=4; 5=3; 6=2; 7=1')
+df_long3 <- df_long2 %>%
+  mutate(Cognitive_Bias_Rv = recode(Cognitive_Bias, '1'=7, '2'=6, '3'=5, '4'=4, '5'=3, '6'=2, '7'=1)) %>%
+  mutate(Motivated_Bias_Rv = recode(Motivated_Bias, '1'=7, '2'=6, '3'=5, '4'=4, '5'=3, '6'=2, '7'=1))
 
 #creates objectivity score
 #this is a combination of two items. In a previous 
@@ -402,7 +403,7 @@ df_long3 <- df_long2$recode(Cognitive_Bias, '1=7; 2=6; 3=5; 4=4; 5=3; 6=2; 7=1')
 #judments motivated by a desire to protect (or boost) their reputation, ego,
 #or self-interest?"
 df_long4 <- df_long3%>%
-  mutate(Objectivity = (Cognitive_Bias + Motivated_Bias) / 2)
+  mutate(Objectivity = (Cognitive_Bias_Rv + Motivated_Bias_Rv) / 2)
 
 #creating objectivity NRS and Disagreement NRS
   
