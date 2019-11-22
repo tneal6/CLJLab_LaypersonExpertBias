@@ -3,6 +3,7 @@ library(tidyverse)
 library(dplyr)
 library(data.table)
 library(readr)
+library(car)
 
 ## Import the data (Percepts of Expert Bias Datset_Functional Dataset - CSV)
  df <- Percepts_of_Expert_Bias_Dataset_Functional_Dataset
@@ -385,36 +386,41 @@ df_long2 <- df_long1 %>%
                               Restaurant_Stability = "Restaurant_Critic", 
                               Human_Resource_Stability = "HR_Agent", Election_Stability = "Election"))
 
-#creates objectivity score
-  #this is a combination of two items. In a previous 
-  #dataset (R. Velez thesis), these two items were highly correlated (r=.794). As
-  #a two-item scale they had a cronbach's alpha of .882. They are "Cognitive_Bias" 
-  #= "When [experts] make judgments as part of their work, to what extent are 
-  #those judgments influenced by their expectations,preconceptions, and intutions 
-  #(rather than reflecting a rational analysis of the facts? and "Motivated_Bias" 
-  #= "When [experts] make judgments as part of their work, how much are those 
-  #judments motivated by a desire to protect (or boost) their reputation, ego,
-  #or self-interest?"
-df_long3 <- df_long2%>%
-  mutate(Objectivity = (Cognitive_Bias + Motivated_Bias) / 2)
 
 #reverse scoring the objectivity scale
+df_long3 <- df_long2%>%
+  mutate(Cognitive_Bias = replace(Cognitive_Bias,Cognitive_Bias == 1, 7))%>%
+  mutate(Motivated_Bias=replace(Motivated_Bias,Motivated_Bias==1, 7))%>%
+  mutate(Cognitive_Bias=replace(Cognitive_Bias,Cognitive_Bias==2, 6))%>%
+  mutate(Motivated_Bias = replace(Motivated_Bias, Motivated_Bias == 2, 6))%>%
+  mutate(Cognitive_Bias = replace(Cognitive_Bias, Cognitive_Bias == 3, 5))%>%
+  mutate(Motivated_Bias = replace(Motivated_Bias, Motivated_Bias == 3, 5))%>%
+  mutate(Cognitive_Bias = replace(Cognitive_Bias, Cognitive_Bias == 4, 4))%>%
+  mutate(Motivated_Bias = replace(Motivated_Bias, Motivated_Bias == 4, 4))%>%
+  mutate(Cognitive_Bias = replace(Cognitive_Bias, Cognitive_Bias == 5, 3))%>%
+  mutate(Motivated_Bias = replace(Motivated_Bias, Motivated_Bias == 5, 3))%>%
+  mutate(Cognitive_Bias = replace(Cognitive_Bias, Cognitive_Bias == 6, 2))%>%
+  mutate(Motivated_Bias = replace(Motivated_Bias, Motivated_Bias == 6, 2))%>%
+  mutate(Cognitive_Bias = replace(Cognitive_Bias, Cognitive_Bias == 7, 1))%>%
+  mutate(Motivated_Bias = replace(Motivated_Bias, Motivated_Bias == 7, 1))
+ 
+df_long3 <- df_long2 %>%
+  recode(Cognitive_Bias, '1=7, 2=6, 3=5, 4=4, 5=3, 6=2, 7=1')
+
+#creates objectivity score
+#this is a combination of two items. In a previous 
+#dataset (R. Velez thesis), these two items were highly correlated (r=.794). As
+#a two-item scale they had a cronbach's alpha of .882. They are "Cognitive_Bias" 
+#= "When [experts] make judgments as part of their work, to what extent are 
+#those judgments influenced by their expectations,preconceptions, and intutions 
+#(rather than reflecting a rational analysis of the facts? and "Motivated_Bias" 
+#= "When [experts] make judgments as part of their work, how much are those 
+#judments motivated by a desire to protect (or boost) their reputation, ego,
+#or self-interest?"
 df_long4 <- df_long3%>%
-  mutate(Objectivity = replace(Objectivity,Objectivity == 1, 7))%>%
-  mutate(Objectivity=replace(Objectivity,Objectivity==1.5, 6.5))%>%
-  mutate(Objectivity=replace(Objectivity,Objectivity==2, 6))%>%
-  mutate(Objectivity = replace(Objectivity, Objectivity == 2.5, 5.5))%>%
-  mutate(Objectivity = replace(Objectivity, Objectivity == 3, 5))%>%
-  mutate(Objectivity = replace(Objectivity, Objectivity == 3.5, 4.5))%>%
-  mutate(Objectivity = replace(Objectivity, Objectivity == 4, 4))%>%
-  mutate(Objectivity = replace(Objectivity, Objectivity == 4.5, 3.5))%>%
-  mutate(Objectivity = replace(Objectivity, Objectivity == 5, 3))%>%
-  mutate(Objectivity = replace(Objectivity, Objectivity == 5.5, 2.5))%>%
-  mutate(Objectivity = replace(Objectivity, Objectivity == 6, 2))%>%
-  mutate(Objectivity = replace(Objectivity, Objectivity == 6.5, 1.5))%>%
-  mutate(Objectivity = replace(Objectivity, Objectivity == 7, 1))
-  
-  #creating objectivity NRS and Disagreement NRS
+  mutate(Objectivity = (Cognitive_Bias + Motivated_Bias) / 2)
+
+#creating objectivity NRS and Disagreement NRS
   
 df_long4 <- df_long4 %>%
   mutate(NRS_Objectivity = (NRS4 + NRS5 + NRS7 + NRS8 + NRS9) / 5)
@@ -474,7 +480,7 @@ H2_experts_table <- df_long4 %>%
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
 # (you'll see for this one our error is really small!)
-df_long4%>%
+df_long3%>%
   filter(!is.na(Objectivity)) %>%
   filter(!is.na(Accuracy)) %>%
   ggplot() +
