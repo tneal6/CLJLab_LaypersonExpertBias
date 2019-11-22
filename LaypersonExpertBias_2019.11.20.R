@@ -398,6 +398,32 @@ df_long2 <- df_long1 %>%
 df_long3 <- df_long2%>%
   mutate(Objectivity = (Cognitive_Bias + Motivated_Bias) / 2)
 
+#reverse scoring the objectivity scale
+df_long3 <- df_long3%>%
+  mutate(Objectivity = replace(Objectivity,Objectivity == 1, 7))%>%
+  mutate(Objectivity=replace(Objectivity,Objectivity==1.5, 6.5))%>%
+  mutate(Objectivity=replace(Objectivity,Objectivity==2, 6))%>%
+  mutate(Objectivity = replace(Objectivity, Objectivity == 2.5, 5.5))%>%
+  mutate(Objectivity = replace(Objectivity, Objectivity == 3, 5))%>%
+  mutate(Objectivity = replace(Objectivity, Objectivity == 3.5, 4.5))%>%
+  mutate(Objectivity = replace(Objectivity, Objectivity == 4, 4))%>%
+  mutate(Objectivity = replace(Objectivity, Objectivity == 4.5, 3.5))%>%
+  mutate(Objectivity = replace(Objectivity, Objectivity == 5, 3))%>%
+  mutate(Objectivity = replace(Objectivity, Objectivity == 5.5, 2.5))%>%
+  mutate(Objectivity = replace(Objectivity, Objectivity == 6, 2))%>%
+  mutate(Objectivity = replace(Objectivity, Objectivity == 6.5, 1.5))%>%
+  mutate(Objectivity = replace(Objectivity, Objectivity == 7, 1))%>%
+  
+  #creating objectivity NRS and Disagreement NRS
+  
+  df_long3 <- df_long3%>%
+  mutate(NRS_Objectivity = (NRS4 + NRS5 + NRS7 + NRS8 + NRS9) / 5)
+
+df_long3 <- df_long3%>%
+  mutate(NRS_Disagreement = (NRS1 + NRS2 + NRS3 + NRS6 + NRS8 + NRS10) / 6)
+
+df_long3 <- df_long3%>%
+  mutate(NRS_Total = (NRS1 + NRS2 + NRS3 + NRS4 + NRS5 +NRS6 + NRS7+ NRS8 + NRS9+ NRS10 + NRS11) /11)
 
 #Hypothesis 1: We expect that people will believe experts are largely protected against bias (i.e., an illusion of objectivity in experts)
 H1_table <- df_long3 %>%
