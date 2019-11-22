@@ -412,11 +412,11 @@ df_long3 <- df_long3%>%
   mutate(Objectivity = replace(Objectivity, Objectivity == 5.5, 2.5))%>%
   mutate(Objectivity = replace(Objectivity, Objectivity == 6, 2))%>%
   mutate(Objectivity = replace(Objectivity, Objectivity == 6.5, 1.5))%>%
-  mutate(Objectivity = replace(Objectivity, Objectivity == 7, 1))%>%
+  mutate(Objectivity = replace(Objectivity, Objectivity == 7, 1))
   
   #creating objectivity NRS and Disagreement NRS
   
-  df_long3 <- df_long3%>%
+df_long3 <- df_long3 %>%
   mutate(NRS_Objectivity = (NRS4 + NRS5 + NRS7 + NRS8 + NRS9) / 5)
 
 df_long3 <- df_long3%>%
@@ -453,30 +453,6 @@ df_long3 %>%
                     ymax = mean_obj + (sd_obj/sqrt(nrow(H1_experts_table)))), width = .5) +
   coord_flip() +
   theme_classic()
-
-
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
-
-
-## Plot, but suppress the labels
-midpts <- barplot(DD, col=rainbow(20), names.arg="")
-
-## Use grid to add the labels    
-vps <- baseViewports()
-pushViewport(vps$inner, vps$figure, vps$plot)
-
-grid.text(names(DD),
-          x = unit(midpts, "native"), y=unit(-1, "lines"),
-          just="right", rot=50)
-
-popViewport(3)
-
-
-
-
-
-
-
 
 
 #Hypothesis 2: We expect people will perceive experts as more objective when they 
