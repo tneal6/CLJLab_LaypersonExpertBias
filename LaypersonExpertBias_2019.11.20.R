@@ -406,6 +406,9 @@ df_long4 <- df_long3%>%
   mutate(Objectivity = (Cognitive_Bias_Rv + Motivated_Bias_Rv) / 2)
 
 #creating objectivity NRS and Disagreement NRS
+#score the Naive Realism Scale
+#name the total scaled variable for the Objectivity subscale "NRS_Objectivity"
+#name the total scaled variable for the Disagreement subscale "NRS_Disagreement"
   
 df_long4 <- df_long4 %>%
   mutate(NRS_Objectivity = (NRS4 + NRS5 + NRS7 + NRS8 + NRS9) / 5)
@@ -425,6 +428,12 @@ H1_experts_table <- df_long4 %>%
   group_by(Expert_Type) %>%
   summarise(mean_obj = mean(Objectivity, na.rm = TRUE),
             sd_obj = sd(Objectivity, na.rm = TRUE))
+
+##Histogram of objectivity (averaged across everything)
+df_long4 %>%
+  ggplot() +
+  geom_histogram(aes(Objectivity))
+theme_classic()
 
 # this creates a bar plot with standard error bars of the average 
 # objectivity score per expert type (you'll need to press zoom to see 
@@ -463,9 +472,15 @@ H2_experts_table <- df_long4 %>%
   summarise(mean_acc = mean(Accuracy, na.rm = TRUE),
             sd_acc = sd(Accuracy, na.rm = TRUE))
 
+##Histogram of accuracy (averaged across everything)
+df_long4 %>%
+  ggplot() +
+  geom_histogram(aes(Accuracy))
+theme_classic()
+
 # this makes a geom_smooth plot - basically a regression line with shaded error
 # (you'll see for this one our error is really small!)
-df_long3%>%
+df_long4%>%
   filter(!is.na(Objectivity)) %>%
   filter(!is.na(Accuracy)) %>%
   ggplot() +
@@ -490,6 +505,12 @@ H3_experts_table <- df_long4 %>%
   group_by(Expert_Type) %>%
   summarise(mean_trn = mean(Training, na.rm = TRUE),
             sd_trn = sd(Training, na.rm = TRUE))
+
+##Histogram of training (averaged across everything)
+df_long4 %>%
+  ggplot() +
+  geom_histogram(aes(Training))
+theme_classic()
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
 df_long4%>%
@@ -528,6 +549,12 @@ H4a_experts_table <- df_long4 %>%
   summarise(mean_bm = mean(Bias_Mitigating, na.rm = TRUE),
             sd_bm = sd(Bias_Mitigating, na.rm = TRUE))
 
+##Histogram of Bias_Mitigating (averaged across everything)
+df_long4 %>%
+  ggplot() +
+  geom_histogram(aes(Bias_Mitigating))
+theme_classic()
+
 # this makes a geom_smooth plot - basically a regression line with shaded error
 #for hypothesis 4a2 - (no figure for 4a b/c no relationship)
 df_long4%>%
@@ -548,6 +575,12 @@ H4b_experts_table <- df_long4 %>%
   group_by(Expert_Type) %>%
   summarise(mean_dgm = mean(Dogmatic, na.rm = TRUE),
             sd_dgm = sd(Dogmatic, na.rm = TRUE))
+
+##Histogram of Dogmatic (averaged across everything)
+df_long4 %>%
+  ggplot() +
+  geom_histogram(aes(Dogmatic))
+theme_classic()
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
 #hypothesis 4b
@@ -593,6 +626,12 @@ H5.1_experts_table <- df_long4 %>%
   summarise(mean_stb = mean(Stability, na.rm = TRUE),
             sd_stb = sd(Stability, na.rm = TRUE))
 
+##Histogram of Stability (averaged across everything)
+df_long4 %>%
+  ggplot() +
+  geom_histogram(aes(Stability))
+theme_classic()
+
 # Descriptives for Clarity
 H5.2_table <- df_long4 %>%
   summarise(mean_cla = mean(Clarity, na.rm = TRUE),
@@ -602,6 +641,12 @@ H5.2_experts_table <- df_long4 %>%
   group_by(Expert_Type) %>%
   summarise(mean_cla = mean(Clarity, na.rm = TRUE),
             sd_cla = sd(Clarity, na.rm = TRUE))
+
+##Histogram of Clarity (averaged across everything)
+df_long4 %>%
+  ggplot() +
+  geom_histogram(aes(Clarity))
+theme_classic()
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
 #Stability plot-Hyp 5.1
@@ -641,6 +686,12 @@ H6_experts_table <- df_long4 %>%
   summarise(mean_dsc = mean(Discretion, na.rm = TRUE),
             sd_dsc = sd(Discretion, na.rm = TRUE))
 
+##Histogram of Discretion (averaged across everything)
+df_long4 %>%
+  ggplot() +
+  geom_histogram(aes(Discretion))
+theme_classic()
+
 # this makes a geom_smooth plot - basically a regression line with shaded error
 df_long4%>%
   filter(!is.na(Objectivity)) %>%
@@ -668,6 +719,12 @@ H7_experts_table <- df_long4 %>%
   summarise(mean_con = mean(Contact, na.rm = TRUE),
             sd_con = sd(Contact, na.rm = TRUE))
 
+##Contact, we want histogram of contact likert responses (low contact overall)
+df_long4 %>%
+  ggplot() +
+  geom_histogram(aes(Contact))
+theme_classic()
+
 # this makes a geom_smooth plot - basically a regression line with shaded error
 df_long4%>%
   filter(!is.na(Objectivity)) %>%
@@ -677,6 +734,7 @@ df_long4%>%
   scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
   scale_x_continuous(breaks = c(1:7)) +
   theme_classic(20)
+
 
 #Hypothesis 8: We expect people will perceive experts as more objective when 
 #they like experts more
@@ -694,6 +752,12 @@ H8_experts_table <- df_long4 %>%
   group_by(Expert_Type) %>%
   summarise(mean_lik = mean(Like, na.rm = TRUE),
             sd_lik = sd(Like, na.rm = TRUE))
+
+##Histogram of like overall (avg across everything)
+df_long4 %>%
+  ggplot() +
+  geom_histogram(aes(Like))
+theme_classic()
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
 df_long4%>%
@@ -722,6 +786,12 @@ H9_experts_table <- df_long4 %>%
   summarise(mean_dis = mean(Disagree, na.rm = TRUE),
             sd_dis = sd(Disagree, na.rm = TRUE))
 
+##Histogram of Disagree overall (avg across everything)
+df_long4 %>%
+  ggplot() +
+  geom_histogram(aes(Disagree))
+theme_classic()
+
 # this makes a geom_smooth plot - basically a regression line with shaded error
 df_long4%>%
   filter(!is.na(Objectivity)) %>%
@@ -734,9 +804,7 @@ df_long4%>%
 
 #Hypothesis 10: We expect that people who score higher on the Naïve Realism 
 #Scale will impute more bias in experts than those who score lower on the scale
-#TODO: score the Naive Realism Scale - see email from Nate Cheek with scoring instructions
-#name the total scaled variable for the Objectivity subscale "NRS_Objectivity"
-#name the total scaled variable for the Disagreement subscale "NRS_Disagreement"
+#Two NRS subscales: "NRS_Objectivity" and "NRS_Disagreement"
 hypothesis_10 <- lm(Objectivity ~ NRS_Objectivity + NRS_Disagreement, data = df_long4)
 
 # this gives us the regression output that we usually see in SPSS
@@ -760,6 +828,18 @@ H10b_experts_table <- df_long4 %>%
   summarise(mean_NRS_D = mean(Objectivity, na.rm = TRUE),
             sd_NRS_D = sd(Objectivity, na.rm = TRUE))
 
+##Histogram of NRS_Objectivity overall (avg across everything)
+df_long4 %>%
+  ggplot() +
+  geom_histogram(aes(NRS_Objectivity))
+theme_classic()
+
+##Histogram of NRS_Disagreement overall (avg across everything)
+df_long4 %>%
+  ggplot() +
+  geom_histogram(aes(NRS_Disagreement))
+theme_classic()
+
 # this makes a geom_smooth plot - basically a regression line with shaded error
 # I put both predictors on this graph, specified by color. May not be the 
 # best way to do it but it works for now! -TN copied EL code for Hyp 5 in earlier draft of script:)
@@ -773,3 +853,15 @@ df_long4%>%
   scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
   scale_x_continuous(breaks = c(1:7)) +
   theme_classic(20)
+
+
+
+##TODO
+##1) model the within subjects into the regression analyses - lmer? - Emily L. on it! (also think about how to 
+##model random slopes & random intercepts...)
+##1b) look into making the plots directly from the lmer regression models - a better representation of the error - Emily L. on it!
+##2) Make sure for hypothesis 10 for the individual differences analyses that we are using wide-formatted data?
+##maybe able to address #2 with lmer model....
+##3) try to create figures for each analysis that overlays the scatterplot for each expert domain (with labels) - Emily Denne on it!
+##onto the regression line
+##4) do we need to do any ordinal regressions??  instead of linear??
