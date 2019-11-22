@@ -412,6 +412,7 @@ H1_experts_table <- df_long3 %>%
 # this creates a bar plot with standard error bars of the average 
 # objectivity score per expert type (you'll need to press zoom to see 
 # the full graph)
+
 df_long3 %>%
   group_by(Expert_Type) %>%
   summarise(mean_obj = mean(Objectivity, na.rm = TRUE),
@@ -420,10 +421,37 @@ df_long3 %>%
   coord_cartesian (ylim = c(1, 7), xlim = c(1, 7)) +
   ylab(label = "Objectivity Score") + 
   xlab(label = "Expert Type") + 
-  geom_bar(aes(Expert_Type, mean_obj), stat = "identity", color = "light gray", fill = "light gray") +
+  geom_bar(aes(x = reorder(Expert_Type, -mean_obj), mean_obj), stat = "identity", 
+            width = .5) +
   geom_errorbar(aes(x = Expert_Type, ymin=mean_obj - (sd_obj/sqrt(nrow(H1_experts_table))), 
-                    ymax = mean_obj + (sd_obj/sqrt(nrow(H1_experts_table))))) +
-  theme_classic(20) 
+                    ymax = mean_obj + (sd_obj/sqrt(nrow(H1_experts_table)))), width = .5) +
+  coord_flip() +
+  theme_classic()
+
+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+## Plot, but suppress the labels
+midpts <- barplot(DD, col=rainbow(20), names.arg="")
+
+## Use grid to add the labels    
+vps <- baseViewports()
+pushViewport(vps$inner, vps$figure, vps$plot)
+
+grid.text(names(DD),
+          x = unit(midpts, "native"), y=unit(-1, "lines"),
+          just="right", rot=50)
+
+popViewport(3)
+
+
+
+
+
+
+
+
 
 #Hypothesis 2: We expect people will perceive experts as more objective when they 
 #perceive expert domains as yielding more accurate judgments.
