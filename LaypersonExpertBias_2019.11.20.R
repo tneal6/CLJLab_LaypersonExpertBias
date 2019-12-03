@@ -865,3 +865,25 @@ df_long4%>%
 ##3) try to create figures for each analysis that overlays the scatterplot for each expert domain (with labels) - Emily Denne on it!
 ##onto the regression line
 ##4) do we need to do any ordinal regressions??  instead of linear??
+
+####TODO COMMENTS FROM EMILY P by email in response to these results that Tess sent by word doc on 11/23.
+####   "So cool to see these preliminary analyses! Looks like we designed a good study 🙂  
+####   I think it will be interesting to put the predictors of bias perception into a single model 
+####   in order to compare the strength of the different predictors (since, right now it looks like 
+####   a lot of different things correlate with seeing experts as biased). 
+####  
+####  Also, I guess the current analyses are comparing between subjects, collapsed across expert domains, 
+####  if i'm understanding correctly. So it will be interesting to cut the data a slightly different way -- 
+####  where we essentially code the different expert domains in terms of how much bias is, on average, 
+####  imputed to them (so restaurant critics, who are seen as least objective, would be a 2.84, and DNA analyst, 
+####  who are seen as most objective, a 5.17), and see which predictors explain why some experts are seen as 
+####  more biased than others. For example, I noticed that disagreement with rest critics is 3.53 whereas 
+####  disagree with DNA is 1.55, suggesting that the reason why some experts are seen as more biased than 
+####  other experts is because people have more experience disagreeing with those experts. I'm not exactly
+####   sure what is the most "correct" way to do these analyses, but the basic idea is to see why experts in 
+####   some domains are seen as more objective than experts in other domains, and the type of correlation analysis 
+####   I am describing would accomplish that, albeit in a very unsophisticated way. The current analyses lump
+####    experts together as a group, but of course Tess and I are curious why different experts are seen as
+####     differing in their objectivity (especially interesting is how the forensics folks are seen as 
+####     objective -- probably because people don't understand what they do and have no experience disagreeing 
+####     with them...)
