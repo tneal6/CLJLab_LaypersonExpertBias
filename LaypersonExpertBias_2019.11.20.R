@@ -433,8 +433,8 @@ H1_experts_table <- df_long4 %>%
 ##Histogram of objectivity (averaged across everything)
 df_long4 %>%
   ggplot() +
-  geom_histogram(aes(Objectivity))
-theme_classic()
+  geom_histogram(aes(Objectivity)) +
+  theme_classic()
 
 # this creates a bar plot with standard error bars of the average 
 # objectivity score per expert type (you'll need to press zoom to see 
@@ -456,6 +456,8 @@ df_long4 %>%
   theme_classic()
 
 library(lmerTest)
+library(lme4)
+library(sjPlot)
 #Hypothesis 2: We expect people will perceive experts as more objective when they 
 #perceive expert domains as yielding more accurate judgments.
 hypothesis_2 <- lm(Objectivity ~ Accuracy, data = df_long4)
@@ -470,6 +472,11 @@ summary(hyp2.lm)
 # attempting random slopes too
 hyp2.lmr <- lmer(Objectivity ~ Accuracy + (1 + Accuracy|Subject), data = df_long4)
 summary(hyp2.lmr)
+
+
+# plotting the lmer model
+
+sjp(hyp2.lmr)
 
 # Descriptives for accuracy
 H2_table <- df_long4 %>%
