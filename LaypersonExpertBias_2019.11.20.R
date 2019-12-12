@@ -4,7 +4,8 @@ library(dplyr)
 library(data.table)
 library(readr)
 
-## Import the data (Percepts of Expert Bias Datset_Functional Dataset - CSV)
+## First, import the data (Percepts of Expert Bias Datset_Functional Dataset - CSV)
+## Then, name the datafile df
  df <- Percepts_of_Expert_Bias_Dataset_Functional_Dataset
 
 #Added a subject number column
