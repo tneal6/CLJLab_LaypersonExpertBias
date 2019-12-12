@@ -457,6 +457,10 @@ summary(hypothesis_2)
 hyp2.lm <- lmer(Objectivity ~ Accuracy + (1|Subject), data = df_long4)
 summary(hyp2.lm)
 
+# attempting random slopes too
+hyp2.lmr <- lmer(Objectivity ~ Accuracy + (1 + Accuracy|Subject), data = df_long4)
+summary(hyp2.lmr)
+
 # Descriptives for accuracy
 H2_table <- df_long4 %>%
   summarise(mean_acc = mean(Accuracy, na.rm = TRUE),
