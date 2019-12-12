@@ -449,11 +449,13 @@ library(lmerTest)
 #Hypothesis 2: We expect people will perceive experts as more objective when they 
 #perceive expert domains as yielding more accurate judgments.
 hypothesis_2 <- lm(Objectivity ~ Accuracy, data = df_long4)
-hyp2.lm <- lmer(Objectivity ~ Accuracy + (1|Subject), data = df_long4)
-summary(hyp2.lm)
 
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_2)
+
+# using lmer, we can incorporate random intercepts into our model
+hyp2.lm <- lmer(Objectivity ~ Accuracy + (1|Subject), data = df_long4)
+summary(hyp2.lm)
 
 # Descriptives for accuracy
 H2_table <- df_long4 %>%
@@ -482,6 +484,11 @@ hypothesis_3 <- lm(Objectivity ~ Training, data = df_long4)
 
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_3)
+
+# the random intercept version
+
+hyp3.lm <- lmer(Objectivity ~ Training + (1|Subject), data = df_long4)
+summary(hyp3.lm)
 
 # Descriptives for training
 H3_table <- df_long4 %>%
@@ -519,6 +526,21 @@ summary(hypothesis_4.a)
 summary(hypothesis_4.b)
 summary(hypothesis_4.a2)
 summary(hypothesis_4.b2)
+
+
+# random intercept versions: 
+hyp4a.lm <- lmer(Bias_Mitigating ~ Training + (1|Subject), data = df_long4)
+summary(hyp4a.lm)
+
+hyp4b.lm <- lmer(Dogmatic ~ Training + (1|Subject), data = df_long4)
+summary(hyp4b.lm)
+
+hyp4a2.lm <- lmer(Bias_Mitigating ~ Objectivity + (1|Subject), data = df_long4)
+summary(hyp4a2.lm)
+
+hyp4b2.lm <- lmer(Dogmatic ~ Objectivity + (1|Subject), data = df_long4)
+summary(hyp4b2.lm)
+
 
 # Descriptives for Bias Mitigating
 H4a_table <- df_long4 %>%
@@ -585,6 +607,15 @@ hypothesis_5.2 <- lm(Objectivity ~ Clarity, data = df_long4)
 summary(hypothesis_5.1)
 summary(hypothesis_5.2)
 
+# random intercepts version
+
+hyp5.1.lm <- lmer(Objectivity ~ Stability + (1|Subject), data = df_long4)
+summary(hyp5.1.lm)
+
+hyp5.2.lm <- lmer(Objectivity ~ Clarity + (1|Subject), data = df_long4)
+summary(hyp5.2.lm)
+
+
 # Descriptives for stability
 H5.1_table <- df_long4 %>%
   summarise(mean_stb = mean(Stability, na.rm = TRUE),
@@ -633,6 +664,10 @@ hypothesis_6 <- lm(Objectivity ~ Discretion, data = df_long4)
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_6)
 
+# random intercepts version
+hyp6.lm <- lmer(Objectivity ~ Discretion + (1|Subject), data = df_long4)
+summary(hyp6.lm)
+
 # Descriptives for Discretion
 H6_table <- df_long4 %>%
   summarise(mean_dsc = mean(Discretion, na.rm = TRUE),
@@ -659,6 +694,10 @@ hypothesis_7 <- lm(Objectivity ~ Contact, data = df_long4)
 
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_7)
+
+# random intercepts version
+hyp7.lm <- lmer(Objectivity ~ Contact + (1|Subject), data = df_long4)
+summary(hyp7.lm)
 
 # Descriptives for Contact
 H7_table <- df_long4 %>%
@@ -693,6 +732,10 @@ hypothesis_8 <- lm(Objectivity ~ Like, data = df_long4)
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_8)
 
+# random intercepts version
+hyp8.lm <- lmer(Objectivity ~ Like + (1|Subject), data = df_long4)
+summary(hyp8.lm)
+
 # Descriptives for Like
 H8_table <- df_long4 %>%
   summarise(mean_lik = mean(Like, na.rm = TRUE),
@@ -719,6 +762,10 @@ hypothesis_9 <- lm(Objectivity ~ Disagree, data = df_long4)
 
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_9)
+
+# random intercepts version
+hyp9.lm <- lmer(Objectivity ~ Disagree + (1|Subject), data = df_long4)
+summary(hyp9.lm)
 
 # Descriptives for Disagree
 H9_table <- df_long4 %>%
@@ -749,6 +796,10 @@ hypothesis_10 <- lm(Objectivity ~ NRS_Objectivity + NRS_Disagreement, data = df_
 
 # this gives us the regression output that we usually see in SPSS
 summary(hypothesis_10)
+
+# random intercepts version
+hyp10.lm <- lmer(Objectivity ~ NRS_Objectivity + NRS_Disagreement + (1|Subject), data = df_long4)
+summary(hyp10.lm)
 
 # Descriptives for NRS Subscales - Objectivity subscale first
 H10a_table <- df_long4 %>%
