@@ -497,6 +497,24 @@ df_long4%>%
   scale_x_continuous(breaks = c(1:7)) +
   theme_classic(20)
 
+#regression line with the labels 
+m1 <- df_long4%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(Accuracy)) %>%
+  group_by(Expert_Type) %>%
+  mutate(mean_obj = mean(Objectivity))%>%
+  mutate(mean_acc = mean(Accuracy))
+model <- m1%>%
+  ggplot()+
+  geom_point(aes(x = mean_obj, y = mean_acc)) + 
+  geom_text(mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type), hjust = 0)+
+  scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
+  scale_x_continuous(breaks = c(1:7))+
+  labs(x = "Objectivity", y = "Accuracy")+
+  theme_classic()
+model +
+  geom_smooth(aes(x = mean_obj, y = mean_acc), method = "lm")
+
 #Hypothesis 3: As people perceive expertise to increase, we expect perceptions of 
 #expert objectivity to also increase (i.e., we expect people will conflate expertise with objectivity). 
 hypothesis_3 <- lm(Objectivity ~ Training, data = df_long4)
