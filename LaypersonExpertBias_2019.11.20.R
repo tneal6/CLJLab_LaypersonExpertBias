@@ -518,7 +518,7 @@ model <- m1%>%
   geom_text(mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type), hjust = 0)+
   scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
   scale_x_continuous(breaks = c(1:7))+
-  labs(x = "Objectivity", y = "Accuracy")+
+  labs(x = "Accuracy", y = "Objectivity")+
   theme_classic()
 model +
   geom_smooth(aes(x = mean_obj, y = mean_acc), method = "lm")
