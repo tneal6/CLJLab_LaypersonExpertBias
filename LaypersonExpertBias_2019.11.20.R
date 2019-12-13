@@ -456,7 +456,6 @@ df_long4 %>%
   theme_classic()
 
 library(lmerTest)
-library(lme4)
 library(sjPlot)
 #Hypothesis 2: We expect people will perceive experts as more objective when they 
 #perceive expert domains as yielding more accurate judgments.
@@ -473,10 +472,14 @@ summary(hyp2.lm)
 hyp2.lmr <- lmer(Objectivity ~ Accuracy + (1 + Accuracy|Subject), data = df_long4)
 summary(hyp2.lmr)
 
+library(MuMIn)
+r.squaredGLMM(hyp2.lm)
+
 
 # plotting the lmer model
 
-sjp(hyp2.lmr)
+plot_model(hyp2.lmr, type = "pred")
+
 
 # Descriptives for accuracy
 H2_table <- df_long4 %>%
