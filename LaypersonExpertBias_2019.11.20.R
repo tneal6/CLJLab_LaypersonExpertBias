@@ -512,16 +512,19 @@ m1 <- df_long4%>%
   group_by(Expert_Type) %>%
   mutate(mean_obj = mean(Objectivity))%>%
   mutate(mean_acc = mean(Accuracy))
-model <- m1%>%
-  ggplot()+
+
+model <- ggplot(m1)+
   geom_point(aes(x = mean_obj, y = mean_acc)) + 
-  geom_text(mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type), hjust = 0)+
+  geom_text(mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type))+
+  geom_smooth(aes(x = Objectivity, y = Accuracy), method = "lm")+
   scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
-  scale_x_continuous(breaks = c(1:7))+
+  scale_x_continuous(breaks = c(1:7), limit = c(1, 7))+
   labs(x = "Accuracy", y = "Objectivity")+
   theme_classic()
-model +
-  geom_smooth(aes(x = mean_obj, y = mean_acc), method = "lm")
+
+model 
+show(model)
+  
 
 #Hypothesis 3: As people perceive expertise to increase, we expect perceptions of 
 #expert objectivity to also increase (i.e., we expect people will conflate expertise with objectivity). 
@@ -941,6 +944,14 @@ df_long4%>%
   scale_x_continuous(breaks = c(1:7)) +
   theme_classic(20)
 
+#Correlation matrix and graph of all key variables
+data.cor = cor(select(df_long4,Stability:Motivated_Bias_Rv))
+
+install.packages("corrplot")
+library(corrplot)
+
+corrplot(data.cor, tl.col = "black")
+#red is negative corr, blue is possitive corr, dot size is size of the relationship, the 4 red dots: those are just the reverse scored scales
 
 
 ##TODO
