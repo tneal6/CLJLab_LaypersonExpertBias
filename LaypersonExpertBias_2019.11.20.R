@@ -478,7 +478,14 @@ r.squaredGLMM(hyp2.lm)
 
 # plotting the lmer model
 
-plot_model(hyp2.lmr, type = "pred")
+p <- sjPlot::plot_model(hyp2.lmr, type = "pred", colors = "#00ff00") 
+
+p[[1]] +
+  geom_smooth(color = "blue") +
+  scale_y_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  scale_x_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  ggtitle("Objectivity Predicted on Accuracy") +
+  theme_grey(20) 
 
 
 # Descriptives for accuracy
