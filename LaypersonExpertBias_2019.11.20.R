@@ -6,7 +6,7 @@ library(readr)
 
 ## First, import the data (Percepts of Expert Bias Datset_Functional Dataset - CSV)
 ## Then, name the datafile df
- df <- Percepts_of_Expert_Bias_Dataset_Functional_Dataset
+df <- Percepts_of_Expert_Bias_Dataset_Functional_Dataset
 
 #Added a subject number column
 df <- tibble::rowid_to_column(df, "Subject")
@@ -457,6 +457,7 @@ df_long4 %>%
 
 library(lmerTest)
 library(sjPlot)
+library(MuMIn)
 #Hypothesis 2: We expect people will perceive experts as more objective when they 
 #perceive expert domains as yielding more accurate judgments.
 hypothesis_2 <- lm(Objectivity ~ Accuracy, data = df_long4)
@@ -472,13 +473,12 @@ summary(hyp2.lm)
 hyp2.lmr <- lmer(Objectivity ~ Accuracy + (1 + Accuracy|Subject), data = df_long4)
 summary(hyp2.lmr)
 
-library(MuMIn)
 r.squaredGLMM(hyp2.lm)
 
 
 # plotting the lmer model
 
-p <- sjPlot::plot_model(hyp2.lmr, type = "pred", colors = "#00ff00") 
+p <- sjPlot::plot_model(hyp2.lmr, type = "pred") 
 
 p[[1]] +
   geom_smooth(color = "blue") +
@@ -522,19 +522,16 @@ m1 <- df_long4%>%
   group_by(Expert_Type) %>%
   mutate(mean_obj = mean(Objectivity))%>%
   mutate(mean_acc = mean(Accuracy))
-
-model <- ggplot(m1)+
+model <- m1%>%
+  ggplot()+
   geom_point(aes(x = mean_obj, y = mean_acc)) + 
-  geom_text(mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type))+
-  geom_smooth(aes(x = Objectivity, y = Accuracy), method = "lm")+
+  geom_text(mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type), hjust = 0)+
   scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
-  scale_x_continuous(breaks = c(1:7), limit = c(1, 7))+
+  scale_x_continuous(breaks = c(1:7))+
   labs(x = "Accuracy", y = "Objectivity")+
   theme_classic()
-
-model 
-show(model)
-  
+model +
+  geom_smooth(aes(x = mean_obj, y = mean_acc), method = "lm")
 
 #Hypothesis 3: As people perceive expertise to increase, we expect perceptions of 
 #expert objectivity to also increase (i.e., we expect people will conflate expertise with objectivity). 
@@ -954,14 +951,6 @@ df_long4%>%
   scale_x_continuous(breaks = c(1:7)) +
   theme_classic(20)
 
-#Correlation matrix and graph of all key variables
-data.cor = cor(select(df_long4,Stability:Motivated_Bias_Rv))
-
-install.packages("corrplot")
-library(corrplot)
-
-corrplot(data.cor, tl.col = "black")
-#red is negative corr, blue is possitive corr, dot size is size of the relationship, the 4 red dots: those are just the reverse scored scales
 
 
 ##TODO
