@@ -6,7 +6,6 @@ library(readr)
 library(lmerTest)
 library(sjPlot)
 library(MuMIn)
-install.packages("corrplot")
 library(corrplot)
 
 ## First, import the data (Percepts of Expert Bias Datset_Functional Dataset - CSV)
@@ -415,7 +414,7 @@ df_long4 <- df_long3%>%
 #score the Naive Realism Scale
 #name the total scaled variable for the Objectivity subscale "NRS_Objectivity"
 #name the total scaled variable for the Disagreement subscale "NRS_Disagreement"
-  
+
 df_long4 <- df_long4 %>%
   mutate(NRS_Objectivity = (NRS4 + NRS5 + NRS7 + NRS8 + NRS9) / 5)
 
@@ -454,19 +453,13 @@ df_long4 %>%
   ylab(label = "Objectivity Score") + 
   xlab(label = "Expert Type") + 
   geom_bar(aes(x = reorder(Expert_Type, -mean_obj), mean_obj), stat = "identity", 
-            width = .5) +
+           width = .5) +
   geom_errorbar(aes(x = Expert_Type, ymin=mean_obj - (sd_obj/sqrt(nrow(H1_experts_table))), 
                     ymax = mean_obj + (sd_obj/sqrt(nrow(H1_experts_table)))), width = .5) +
   coord_flip() +
   theme_classic()
 
-<<<<<<< HEAD
-library(lmerTest)
-library(sjPlot)
-library(MuMIn)
-=======
 
->>>>>>> 1691880f5f31f80a0726e65f7097c8d31bc034d4
 #Hypothesis 2: We expect people will perceive experts as more objective when they 
 #perceive expert domains as yielding more accurate judgments.
 
@@ -475,25 +468,8 @@ library(MuMIn)
 hyp2.lmr <- lmer(Objectivity ~ Accuracy + (1 + Accuracy|Subject), data = df_long4)
 summary(hyp2.lmr)
 
-<<<<<<< HEAD
-r.squaredGLMM(hyp2.lm)
-
-
-# plotting the lmer model
-
-p <- sjPlot::plot_model(hyp2.lmr, type = "pred") 
-
-p[[1]] +
-  geom_smooth(color = "blue") +
-  scale_y_continuous(limits = c(1, 7), breaks = c(1:7)) +
-  scale_x_continuous(limits = c(1, 7), breaks = c(1:7)) +
-  ggtitle("Objectivity Predicted on Accuracy") +
-  theme_grey(20) 
-
-=======
 #gives us the model Rsquare value
 r.squaredGLMM(hyp2.lmr)
->>>>>>> 1691880f5f31f80a0726e65f7097c8d31bc034d4
 
 # Descriptives for accuracy
 H2_table <- df_long4 %>%
@@ -508,19 +484,9 @@ H2_experts_table <- df_long4 %>%
 ##Histogram of accuracy (averaged across everything)
 df_long4 %>%
   ggplot() +
-  geom_histogram(aes(Accuracy))
-theme_classic()
+  geom_histogram(aes(Accuracy)) +
+  theme_classic()
 
-# plotting the lmer model
-
-p <- sjPlot::plot_model(hyp2.lmr, type = "pred", colors = "#00ff00") 
-
-p[[1]] +
-  geom_smooth(color = "blue") +
-  scale_y_continuous(limits = c(1, 7), breaks = c(1:7)) +
-  scale_x_continuous(limits = c(1, 7), breaks = c(1:7)) +
-  ggtitle("Objectivity Predicted on Accuracy") +
-  theme_grey(20) 
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
 # (you'll see for this one our error is really small!)
@@ -538,18 +504,41 @@ m1 <- df_long4%>%
   filter(!is.na(Objectivity)) %>%
   filter(!is.na(Accuracy)) %>%
   group_by(Expert_Type) %>%
-  mutate(mean_obj = mean(Objectivity))%>%
-  mutate(mean_acc = mean(Accuracy))
-model <- m1%>%
-  ggplot()+
+  summarise(mean_obj = mean(Objectivity), 
+            mean_acc = mean(Accuracy)) %>%
+  mutate(Expert_Type = recode(Expert_Type, DNA_Analyst = "DNA",
+                              Restaurant_Critic = "Restaurant",
+                              HR_Agent = "HR",
+                              Bloodstain_Analyst = "Bloodstain",
+                              Tax_Assessor = "Tax"))
+
+model <- ggplot(m1)+
   geom_point(aes(x = mean_obj, y = mean_acc)) + 
-  geom_text(mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type), hjust = 0)+
+  geom_text(mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type))+
+  geom_smooth(data = df_long4, aes(x = Objectivity, y = Accuracy), method = "lm")+
   scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
-  scale_x_continuous(breaks = c(1:7))+
+  scale_x_continuous(breaks = c(1:7), limit = c(1, 7))+
   labs(x = "Accuracy", y = "Objectivity")+
   theme_classic()
-model +
-  geom_smooth(aes(x = mean_obj, y = mean_acc), method = "lm")
+
+show(model)
+
+# plotting the lmer model
+
+p <- sjPlot::plot_model(hyp2.lmr, type = "pred") 
+
+plot <- p[[1]] +
+  geom_smooth(color = "blue") +
+  scale_y_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  scale_x_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  ggtitle("Objectivity Predicted on Accuracy") +
+  theme_grey(20) 
+
+plot + 
+  geom_point(data = m1, aes(x = mean_obj, y = mean_acc), size = .1) + 
+  geom_text(data = m1, mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type),
+            )
+
 
 #Hypothesis 3: 
 #As people perceive expertise to increase, we expect perceptions of 
@@ -821,7 +810,7 @@ df_long4%>%
 df_long4 %>%
   ggplot() +
   geom_histogram(aes(Contact))
-  theme_classic()
+theme_classic()
 
 #Hypothesis 8: We expect people will perceive experts as more objective when 
 #they like experts more
@@ -947,8 +936,6 @@ df_long4%>%
   scale_x_continuous(breaks = c(1:7)) +
   theme_classic(20)
 
-<<<<<<< HEAD
-=======
 #Correlation matrix and graph of all key variables
 data.cor = cor(select(df_long4,Stability:Discretion, Bias_Mitigating:Motivated_Bias_Rv))
 
@@ -956,7 +943,6 @@ data.cor
 
 corrplot(data.cor, tl.col = "black")
 #red is negative corr, blue is possitive corr, dot size is size of the relationship, the 4 red dots: those are just the reverse scored scales
->>>>>>> 1691880f5f31f80a0726e65f7097c8d31bc034d4
 
 
 ##TODO
