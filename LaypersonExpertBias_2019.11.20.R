@@ -469,6 +469,7 @@ df_long4 %>%
 hyp2.lmr <- lmer(Objectivity ~ Accuracy + (1 + Accuracy|Subject), data = df_long4)
 summary(hyp2.lmr)
 
+
 #gives us the model Rsquare value
 r.squaredGLMM(hyp2.lmr)
 
@@ -933,7 +934,34 @@ data.cor = cor(select(df_long4,Stability:Discretion, Bias_Mitigating:Motivated_B
 data.cor
 
 corrplot(data.cor, tl.col = "black")
-#red is negative corr, blue is possitive corr, dot size is size of the relationship, the 4 red dots: those are just the reverse scored scales
+#red is negative corr, blue is possitive corr, dot size is size of the relationship
+
+#Exploratory Model-Building 1.  Using lmer with all of the predictors entered in together (main effects) + random intercepts
+
+BigModel1.lmr <- lmer(Objectivity ~ Accuracy + Training + Stability + Clarity + Discretion + Contact +
+                        Like + Disagree + (1|Subject), data = df_long4)
+summary(BigModel1.lmr)
+r.squaredGLMM(BigModel1.lmr)
+
+#Exploratory Model-Building 2. using lmer with all predictors + the NRS subscales entered together (as main effects) + random intercepts
+
+BigModel2.lmr <- lmer(Objectivity ~ Accuracy + Training + Stability + Clarity + Discretion + Contact +
+                        Like + Disagree + NRS_Objectivity + NRS_Disagreement + (1|Subject), data = df_long4)
+summary(BigModel2.lmr)
+r.squaredGLMM(BigModel2.lmr)
+
+#Exploratory Model-Building 3. using lmer with all predictors (as main effects) + all 2-way interactions + random intercepts (no NRS)
+
+BigModel3.lmr <- lmer(Objectivity ~ Accuracy + Training + Stability + Clarity + Discretion + Contact +
+                        Like + Disagree + Accuracy*Training + Accuracy*Stability + Accuracy*Clarity + 
+                        Accuracy*Discretion + Accuracy*Contact + Accuracy*Like + Accuracy*Disagree +
+                        Training*Stability  + Training*Clarity + Training*Discretion + Training*Contact 
+                        + Training*Like + Training*Disagree + Stability*Clarity + Stability*Discretion 
+                        + Stability*Contact + Stability*Like + Stability*Disagree + Clarity*Discretion 
+                        + Clarity*Contact + Clarity*Like + Clarity*Disagree + Discretion*Contact + 
+                        Discretion*Like + Discretion*Disagree + Like*Disagree + (1|Subject), data = df_long4)
+summary(BigModel3.lmr)
+r.squaredGLMM(BigModel3.lmr)
 
 
 ##TODO
