@@ -885,6 +885,17 @@ plot5.1 +
   geom_point(data = t5.1, aes(x = mean_obj, y = mean_acc), size = .1) + 
   geom_text(data = t5.1, mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type))
 
+plot5.2 <- p5.2[[1]] +
+  geom_smooth(color = "blue", fill = "blue") +
+  scale_y_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  scale_x_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  ggtitle("Objectivity Predicted on Clarity") +
+  theme_grey(20) 
+
+plot5.2 + 
+  geom_point(data = t5.1, aes(x = mean_obj, y = mean_acc), size = .1) + 
+  geom_text(data = t5.1, mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type))
+
 #Hypothesis 6: We expect people will perceive experts as more objective when 
 #they perceive domains as allowing for less discretion. 
 
@@ -920,6 +931,33 @@ df_long4%>%
   scale_x_continuous(breaks = c(1:7)) +
   theme_classic(20)
 
+# makes a table of the averages across experts
+t6 <- df_long4%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(Discretion)) %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_obj = mean(Objectivity), 
+            mean_acc = mean(Discretion)) %>%
+  mutate(Expert_Type = recode(Expert_Type, DNA_Analyst = "DNA",
+                              Restaurant_Critic = "Restaurant",
+                              HR_Agent = "HR",
+                              Bloodstain_Analyst = "Bloodstain",
+                              Tax_Assessor = "Tax"))
+
+
+p6 <- sjPlot::plot_model(hyp6.lmr, type = "pred") 
+
+plot6 <- p6[[1]] +
+  geom_smooth(color = "blue") +
+  scale_y_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  scale_x_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  ggtitle("Objectivity Predicted on Discretion") +
+  theme_grey(20) 
+
+plot6 + 
+  geom_point(data = t6, aes(x = mean_obj, y = mean_acc), size = .1) + 
+  geom_text(data = t6, mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type))
+
 #Hypothesis 7: We expect people will perceive experts as more objective when 
 #they are less familiar with  the expert domain.
 
@@ -928,6 +966,11 @@ df_long4%>%
 hyp7.lmr <- lmer(Objectivity ~ Contact + (1 + Contact|Subject), data = df_long4)
 summary(hyp7.lmr)
 r.squaredGLMM(hyp7.lmr)
+
+
+# brms model because the one above didn't converge
+hyp7.bm <- brm(Objectivity ~ Contact + (1 + Contact|Subject), data = df_long4)
+summary(hyp7.bm)
 
 # Descriptives for Contact
 H7_table <- df_long4 %>%
@@ -959,6 +1002,33 @@ df_long4 %>%
   ggplot() +
   geom_histogram(aes(Contact))
 theme_classic()
+
+# makes a table of the averages across experts
+t7 <- df_long4%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(Contact)) %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_obj = mean(Objectivity), 
+            mean_acc = mean(Contact)) %>%
+  mutate(Expert_Type = recode(Expert_Type, DNA_Analyst = "DNA",
+                              Restaurant_Critic = "Restaurant",
+                              HR_Agent = "HR",
+                              Bloodstain_Analyst = "Bloodstain",
+                              Tax_Assessor = "Tax"))
+
+
+p7 <- sjPlot::plot_model(hyp7.bm, type = "pred") 
+
+plot7 <- p7[[1]] +
+  geom_smooth(color = "blue") +
+  scale_y_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  scale_x_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  ggtitle("Objectivity Predicted on Discretion") +
+  theme_grey(20) 
+
+plot7 + 
+  geom_point(data = t7, aes(x = mean_obj, y = mean_acc), size = .1) + 
+  geom_text(data = t7, mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type))
 
 #Hypothesis 8: We expect people will perceive experts as more objective when 
 #they like experts more
@@ -995,6 +1065,32 @@ df_long4%>%
   scale_x_continuous(breaks = c(1:7)) +
   theme_classic(20)
 
+# makes a table of the averages across experts
+t8 <- df_long4%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(Like)) %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_obj = mean(Objectivity), 
+            mean_acc = mean(Like)) %>%
+  mutate(Expert_Type = recode(Expert_Type, DNA_Analyst = "DNA",
+                              Restaurant_Critic = "Restaurant",
+                              HR_Agent = "HR",
+                              Bloodstain_Analyst = "Bloodstain",
+                              Tax_Assessor = "Tax"))
+
+p8 <- sjPlot::plot_model(hyp8.lmr, type = "pred") 
+
+plot8 <- p8[[1]] +
+  geom_smooth(color = "blue") +
+  scale_y_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  scale_x_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  ggtitle("Objectivity Predicted on Like") +
+  theme_grey(20) 
+
+plot8 + 
+  geom_point(data = t8, aes(x = mean_obj, y = mean_acc), size = .1) + 
+  geom_text(data = t8, mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type))
+
 #Hypothesis 9: We expect people will perceive experts as more objective when 
 # they have lower experiences of disagreement  with experts in a field.
 
@@ -1029,6 +1125,32 @@ df_long4%>%
   scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
   scale_x_continuous(breaks = c(1:7)) +
   theme_classic(20)
+
+# makes a table of the averages across experts
+t9 <- df_long4%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(Disagree)) %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_obj = mean(Objectivity), 
+            mean_acc = mean(Disagree)) %>%
+  mutate(Expert_Type = recode(Expert_Type, DNA_Analyst = "DNA",
+                              Restaurant_Critic = "Restaurant",
+                              HR_Agent = "HR",
+                              Bloodstain_Analyst = "Bloodstain",
+                              Tax_Assessor = "Tax"))
+
+p9 <- sjPlot::plot_model(hyp9.lmr, type = "pred") 
+
+plot9 <- p9[[1]] +
+  geom_smooth(color = "blue") +
+  scale_y_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  scale_x_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  ggtitle("Objectivity Predicted on Like") +
+  theme_grey(20) 
+
+plot9 + 
+  geom_point(data = t9, aes(x = mean_obj, y = mean_acc), size = .1) + 
+  geom_text(data = t9, mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type))
 
 #Hypothesis 10: We expect that people who score higher on the Naïve Realism 
 #Scale will impute more bias in experts than those who score lower on the scale
