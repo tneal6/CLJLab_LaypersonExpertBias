@@ -427,7 +427,11 @@ df_long4 <- df_long4%>%
 df_long4 <- df_long4%>%
   mutate(NRS_Total = (NRS1 + NRS2 + NRS3 + NRS4 + NRS5 +NRS6 + NRS7+ NRS8 + NRS9+ NRS10 + NRS11) /11)
 
-#Hypothesis 1: We expect that people will believe experts are largely protected against bias (i.e., an illusion of objectivity in experts)
+set.seed(121)
+
+# ---------------------------------------------------------------------------------
+#Hypothesis 1: We expect that people will believe experts are largely protected against bias 
+# (i.e., an illusion of objectivity in experts)
 H1_table <- df_long4 %>%
   summarise(mean_obj = mean(Objectivity, na.rm = TRUE),
             sd_obj = sd(Objectivity, na.rm = TRUE))
@@ -538,8 +542,10 @@ plot <- p[[1]] +
   theme_grey(20) 
 
 plot + 
-  geom_point(data = m1, aes(x = mean_obj, y = mean_acc), size = .1) + 
-  geom_text(data = m1, mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type))
+  geom_point(data = m1, aes(x = mean_obj, y = mean_acc), size = .1, 
+             position = position_jitter(width = .4, seed = 32)) + 
+  geom_text(data = m1, mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type),
+            position = position_jitter(width = .4, height = .3, seed = 32), label.size = .25)
 
 
 #Hypothesis 3: 
@@ -882,8 +888,10 @@ plot5.1 <- p5.1[[1]] +
   theme_grey(20) 
 
 plot5.1 + 
-  geom_point(data = t5.1, aes(x = mean_obj, y = mean_acc), size = .1) + 
-  geom_text(data = t5.1, mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type))
+  geom_point(data = t5.1, aes(x = mean_obj, y = mean_acc), size = .1, 
+             position = position_jitter(width = .3, seed = 32)) + 
+  geom_text(data = t5.1, mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type),
+            position = position_jitter(width = .3, height = .4, seed = 32), label.size = .2)
 
 plot5.2 <- p5.2[[1]] +
   geom_smooth(color = "blue", fill = "blue") +
@@ -893,8 +901,10 @@ plot5.2 <- p5.2[[1]] +
   theme_grey(20) 
 
 plot5.2 + 
-  geom_point(data = t5.1, aes(x = mean_obj, y = mean_acc), size = .1) + 
-  geom_text(data = t5.1, mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type))
+  geom_point(data = t5.1, aes(x = mean_obj, y = mean_acc), size = .1,
+             position = position_jitter(width = .2, seed = 32)) + 
+  geom_text(data = t5.1, mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type),
+            position = position_jitter(width = .2, height = .3, seed = 32), label.size = .2)
 
 #Hypothesis 6: We expect people will perceive experts as more objective when 
 #they perceive domains as allowing for less discretion. 
