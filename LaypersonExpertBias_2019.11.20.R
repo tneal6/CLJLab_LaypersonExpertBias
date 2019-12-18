@@ -7,7 +7,10 @@ library(lmerTest)
 library(sjPlot)
 library(MuMIn)
 library(corrplot)
-
+library(brms)
+require(rstan)
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
 ## First, import the data (Percepts of Expert Bias Datset_Functional Dataset - CSV)
 ## Then, name the datafile df
 df <- Percepts_of_Expert_Bias_Dataset_Functional_Dataset
@@ -468,7 +471,6 @@ df_long4 %>%
 hyp2.lmr <- lmer(Objectivity ~ Accuracy + (1 + Accuracy|Subject), data = df_long4)
 summary(hyp2.lmr)
 
-
 #gives us the model Rsquare value
 r.squaredGLMM(hyp2.lmr)
 
@@ -537,8 +539,7 @@ plot <- p[[1]] +
 
 plot + 
   geom_point(data = m1, aes(x = mean_obj, y = mean_acc), size = .1) + 
-  geom_text(data = m1, mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type),
-            )
+  geom_text(data = m1, mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type))
 
 
 #Hypothesis 3: 
@@ -549,6 +550,9 @@ plot +
 # and random slopes (1 + Training|Subject) into our model
 hyp3.lmr <- lmer(Objectivity ~ Training + (1 + Training|Subject), data = df_long4)
 summary(hyp3.lmr)
+
+hyp3.bm <- brm(Objectivity ~ Training + (1 + Training|Subject), data = df_long4, family = "gaussian")
+summary(hyp3.bm)
 
 #gives us the model Rsquare value
 r.squaredGLMM(hyp3.lmr)
@@ -570,7 +574,7 @@ df_long4 %>%
   geom_histogram(aes(Training))
 theme_classic()
 
-# this makes a geom_smooth plot - basically a regression line with shaded error
+#regression line with shaded error
 df_long4%>%
   filter(!is.na(Objectivity)) %>%
   filter(!is.na(Training)) %>%
@@ -579,6 +583,34 @@ df_long4%>%
   scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
   scale_x_continuous(breaks = c(1:7)) +
   theme_classic(20)
+
+
+# this makes a table with averages for these variables across the experts
+t3 <- df_long4%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(Training)) %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_obj = mean(Objectivity), 
+            mean_acc = mean(Training)) %>%
+  mutate(Expert_Type = recode(Expert_Type, DNA_Analyst = "DNA",
+                              Restaurant_Critic = "Restaurant",
+                              HR_Agent = "HR",
+                              Bloodstain_Analyst = "Bloodstain",
+                              Tax_Assessor = "Tax"))
+
+
+p3 <- sjPlot::plot_model(hyp3.bm, type = "pred") 
+
+plot3 <- p3[[1]] +
+  geom_smooth(color = "blue") +
+  scale_y_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  scale_x_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  ggtitle("Objectivity Predicted on Training") +
+  theme_grey(20) 
+
+plot3 + 
+  geom_point(data = t3, aes(x = mean_obj, y = mean_acc), size = .1) + 
+  geom_text(data = t3, mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type))
 
 #Hypothesis 4: We expect to observe consequences of the illusion of objectivity 
 #and conflation of expertise with objectivity. Specifically, we expect that as 
@@ -594,17 +626,36 @@ hyp4a.lmr <- lmer(Bias_Mitigating ~ Training + (1 + Training|Subject), data = df
 summary(hyp4a.lmr)
 r.squaredGLMM(hyp4a.lmr)
 
+# bayesian model version (because the other is not converging) of 4a
+hyp4a.bm <- brm(Bias_Mitigating ~ Training + (1 + Training|Subject), data = df_long4)
+summary(hyp4a.bm)
+
+# lmer version - currently does not converge
 hyp4b.lmr <- lmer(Dogmatic ~ Training + (1 + Training|Subject), data = df_long4)
 summary(hyp4b.lmr)
 r.squaredGLMM(hyp4b.lmr)
 
+# bayesian model version 4b
+hyp4b.bm <- brm(Dogmatic ~ Training + (1 + Training|Subject), data = df_long4)
+summary(hyp4b.bm)
+
+# lmer version - currently does not converge
 hyp4a2.lmr <- lmer(Bias_Mitigating ~ Objectivity + (1 + Objectivity|Subject), data = df_long4)
 summary(hyp4a2.lmr)
 r.squaredGLMM(hyp4a2.lmr)
 
+# bayesian model version 4a.2
+hyp4a2.bm <- brm(Bias_Mitigating ~ Objectivity + (1 + Objectivity|Subject), data = df_long4)
+summary(hyp4a2.bm)
+
+# lmer version - currently does not converge
 hyp4b2.lmr <- lmer(Dogmatic ~ Objectivity + (1 + Objectivity|Subject), data = df_long4)
 summary(hyp4b2.lmr)
 r.squaredGLMM(hyp4b2.lmr)
+
+# bayesian model version 4b.2
+hyp4b2.bm <- brm(Dogmatic ~ Objectivity + (1 + Objectivity|Subject), data = df_long4)
+summary(hyp4b2.bm)
 
 # Descriptives for Bias Mitigating
 H4a_table <- df_long4 %>%
@@ -670,6 +721,59 @@ df_long4%>%
   scale_x_continuous(breaks = c(1:7)) +
   theme_classic(20)
 
+# this makes a table with averages for these variables across the experts
+# 4b - Dogmatic ~ Training
+t4.b <- df_long4%>%
+  filter(!is.na(Dogmatic)) %>%
+  filter(!is.na(Training)) %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_dog = mean(Dogmatic), 
+            mean_train = mean(Training)) %>%
+  mutate(Expert_Type = recode(Expert_Type, DNA_Analyst = "DNA",
+                              Restaurant_Critic = "Restaurant",
+                              HR_Agent = "HR",
+                              Bloodstain_Analyst = "Bloodstain",
+                              Tax_Assessor = "Tax"))
+
+t4.b2 <- df_long4%>%
+  filter(!is.na(Dogmatic)) %>%
+  filter(!is.na(Objectivity)) %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_dog = mean(Dogmatic), 
+            mean_train = mean(Objectivity)) %>%
+  mutate(Expert_Type = recode(Expert_Type, DNA_Analyst = "DNA",
+                              Restaurant_Critic = "Restaurant",
+                              HR_Agent = "HR",
+                              Bloodstain_Analyst = "Bloodstain",
+                              Tax_Assessor = "Tax"))
+
+
+p4.b <- sjPlot::plot_model(hyp4b.bm, type = "pred") 
+
+p4.b2 <- sjPlot::plot_model(hyp4b2.bm, type = "pred") 
+
+plot4.b <- p4.b[[1]] +
+  geom_smooth(color = "blue") +
+  scale_y_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  scale_x_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  ggtitle("Dogmatic Predicted on Training") +
+  theme_grey(20) 
+
+plot4.b + 
+  geom_point(data = t4.b, aes(x = mean_dog, y = mean_train), size = .1) + 
+  geom_text(data = t4.b, mapping = aes(x = mean_dog, y = mean_train, label = Expert_Type))
+
+plot4.b2 <- p4.b2[[1]] +
+  geom_smooth(color = "blue") +
+  scale_y_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  scale_x_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  ggtitle("Dogmatic Predicted on Objectivity") +
+  theme_grey(20) 
+
+plot4.b2 + 
+  geom_point(data = t4.b2, aes(x = mean_dog, y = mean_obj), size = .1) + 
+  geom_text(data = t4.b2, mapping = aes(x = mean_dog, y = mean_obj, label = Expert_Type))
+
 #Hypothesis 5: We expect people will perceive experts as more objective when 
 #they perceive domains as having more stable environmental cues, and when they 
 #perceive domains as providing clearer feedback.
@@ -684,6 +788,8 @@ hyp5.2.lmr <- lmer(Objectivity ~ Clarity + (1 + Clarity|Subject), data = df_long
 summary(hyp5.2.lmr)
 r.squaredGLMM(hyp5.2.lmr)
 
+hyp5.2.bm <- brm(Objectivity ~ Clarity + (1 + Clarity|Subject), data = df_long4)
+summary(hyp5.2.bm)
 
 # Descriptives for stability
 H5.1_table <- df_long4 %>%
@@ -737,6 +843,47 @@ df_long4%>%
   scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
   scale_x_continuous(breaks = c(1:7)) +
   theme_classic(20)
+
+
+# this makes a table with averages for these variables across the experts
+t5.1 <- df_long4%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(Stability)) %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_obj = mean(Objectivity), 
+            mean_acc = mean(Stability)) %>%
+  mutate(Expert_Type = recode(Expert_Type, DNA_Analyst = "DNA",
+                              Restaurant_Critic = "Restaurant",
+                              HR_Agent = "HR",
+                              Bloodstain_Analyst = "Bloodstain",
+                              Tax_Assessor = "Tax"))
+
+t5.2 <- df_long4%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(Clarity)) %>%
+  group_by(Expert_Type) %>%
+  summarise(mean_obj = mean(Objectivity), 
+            mean_acc = mean(Clarity)) %>%
+  mutate(Expert_Type = recode(Expert_Type, DNA_Analyst = "DNA",
+                              Restaurant_Critic = "Restaurant",
+                              HR_Agent = "HR",
+                              Bloodstain_Analyst = "Bloodstain",
+                              Tax_Assessor = "Tax"))
+
+
+p5.1 <- sjPlot::plot_model(hyp5.1.lmr, type = "pred") 
+p5.2 <- sjPlot::plot_model(hyp5.2.lmr, type = "pred") 
+
+plot5.1 <- p5.1[[1]] +
+  geom_smooth(color = "blue", fill = "blue") +
+  scale_y_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  scale_x_continuous(limits = c(1, 7), breaks = c(1:7)) +
+  ggtitle("Objectivity Predicted on Stability") +
+  theme_grey(20) 
+
+plot5.1 + 
+  geom_point(data = t5.1, aes(x = mean_obj, y = mean_acc), size = .1) + 
+  geom_text(data = t5.1, mapping = aes(x = mean_obj, y = mean_acc, label = Expert_Type))
 
 #Hypothesis 6: We expect people will perceive experts as more objective when 
 #they perceive domains as allowing for less discretion. 
