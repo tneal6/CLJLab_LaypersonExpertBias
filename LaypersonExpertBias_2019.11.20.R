@@ -436,6 +436,20 @@ df_long4 <- df_long3.4 %>%
 
 set.seed(121)
 
+# ------------------------------------------------------------------------------
+# TESTING THE HYPOTHESES
+# ------------------------------------------------------------------------------
+
+# NOTES:
+# 
+# We use the function r.squaredGLMM() throughout to calculate the shared variance
+# accounted for by each model. There are two values outputted by this function:
+# 
+# Marginal R_GLMM² represents the variance explained by the fixed effect
+# 
+# Conditional R_GLMM² is interpreted as a variance explained by the entire model, 
+# including both fixed and random effects
+
 # ---------------------------------------------------------------------------------
 #Hypothesis 1: We expect that people will believe experts are largely protected against bias 
 # (i.e., an illusion of objectivity in experts)
@@ -1129,6 +1143,10 @@ plot8 +
 hyp9.lmr <- lmer(Objectivity ~ Disagree + (1 + Disagree|Subject), data = df_long4)
 summary(hyp9.lmr)
 r.squaredGLMM(hyp9.lmr)
+
+hyp9.2lmr <- lmer(Objectivity ~ Disagree_ReScored + (1 + Disagree_ReScored|Subject), data = df_long4)
+summary(hyp9.2lmr)
+r.squaredGLMM(hyp9.2lmr)
 
 # Descriptives for Disagree
 H9_table <- df_long4 %>%
