@@ -1316,18 +1316,48 @@ BigModel2.lmr <- lmer(Objectivity ~ Accuracy + Training + Stability + Clarity + 
 summary(BigModel2.lmr)
 r.squaredGLMM(BigModel2.lmr)
 
+plot_model(BigModel2.lmr)
+
+#Exploratory Model-Building 2.2 using lmer with all predictors + the NRS subscales entered together (as main effects) + random intercepts
+# Using the dichotomous versions of Contact and Disagree
+
+BigModel2.2lmr <- lmer(Objectivity ~ Accuracy + Training + Stability + Clarity + Discretion + Contact_ReScored +
+                        Like + Disagree_ReScored + NRS_Objectivity + NRS_Disagreement + (1|Subject), data = df_long4)
+summary(BigModel2.2lmr)
+r.squaredGLMM(BigModel2.2lmr)
+
+plot_model(BigModel2.2lmr)
+
 #Exploratory Model-Building 3. using lmer with all predictors (as main effects) + all 2-way interactions + random intercepts (no NRS)
 
 BigModel3.lmr <- lmer(Objectivity ~ Accuracy + Training + Stability + Clarity + Discretion + Contact +
                         Like + Disagree + Accuracy*Training + Accuracy*Stability + Accuracy*Clarity + 
                         Accuracy*Discretion + Accuracy*Contact + Accuracy*Like + Accuracy*Disagree +
                         Training*Stability  + Training*Clarity + Training*Discretion + Training*Contact 
-                        + Training*Like + Training*Disagree + Stability*Clarity + Stability*Discretion 
-                        + Stability*Contact + Stability*Like + Stability*Disagree + Clarity*Discretion 
-                        + Clarity*Contact + Clarity*Like + Clarity*Disagree + Discretion*Contact + 
+                      + Training*Like + Training*Disagree + Stability*Clarity + Stability*Discretion 
+                      + Stability*Contact + Stability*Like + Stability*Disagree + Clarity*Discretion 
+                      + Clarity*Contact + Clarity*Like + Clarity*Disagree + Discretion*Contact + 
                         Discretion*Like + Discretion*Disagree + Like*Disagree + (1|Subject), data = df_long4)
 summary(BigModel3.lmr)
 r.squaredGLMM(BigModel3.lmr)
+
+plot_model(BigModel3.lmr)
+
+#Exploratory Model-Building 3.2 using lmer with all predictors (as main effects) + all 2-way interactions + random intercepts (no NRS)
+# Using the dichotomous versions of Contact and Disagree
+
+BigModel3.2lmr <- lmer(Objectivity ~ Accuracy + Training + Stability + Clarity + Discretion + Contact_ReScored +
+                         Like + Disagree_ReScored + Accuracy*Training + Accuracy*Stability + Accuracy*Clarity + 
+                         Accuracy*Discretion + Accuracy*Contact_ReScored + Accuracy*Like + Accuracy*Disagree_ReScored +
+                         Training*Stability  + Training*Clarity + Training*Discretion + Training*Contact_ReScored 
+                       + Training*Like + Training*Disagree_ReScored + Stability*Clarity + Stability*Discretion 
+                       + Stability*Contact_ReScored + Stability*Like + Stability*Disagree_ReScored + Clarity*Discretion 
+                       + Clarity*Contact_ReScored + Clarity*Like + Clarity*Disagree_ReScored + Discretion*Contact_ReScored + 
+                         Discretion*Like + Discretion*Disagree_ReScored + Like*Disagree_ReScored + (1|Subject), data = df_long4)
+summary(BigModel3.2lmr)
+r.squaredGLMM(BigModel3.2lmr)
+
+plot_model(BigModel3.2lmr)
 
 
 ##TODO
