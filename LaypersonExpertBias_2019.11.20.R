@@ -410,7 +410,7 @@ df_long3 <- df_long2 %>%
 #= "When [experts] make judgments as part of their work, how much are those 
 #judments motivated by a desire to protect (or boost) their reputation, ego,
 #or self-interest?"
-df_long4 <- df_long3%>%
+df_long3.1 <- df_long3%>%
   mutate(Objectivity = (Cognitive_Bias_Rv + Motivated_Bias_Rv) / 2)
 
 #creating objectivity NRS and Disagreement NRS
@@ -418,14 +418,21 @@ df_long4 <- df_long3%>%
 #name the total scaled variable for the Objectivity subscale "NRS_Objectivity"
 #name the total scaled variable for the Disagreement subscale "NRS_Disagreement"
 
-df_long4 <- df_long4 %>%
+df_long3.2 <- df_long3.1 %>%
   mutate(NRS_Objectivity = (NRS4 + NRS5 + NRS7 + NRS8 + NRS9) / 5)
 
-df_long4 <- df_long4%>%
+df_long3.3 <- df_long3.2%>%
   mutate(NRS_Disagreement = (NRS1 + NRS2 + NRS3 + NRS6 + NRS8 + NRS10) / 6)
 
-df_long4 <- df_long4%>%
+df_long3.4 <- df_long3.3%>%
   mutate(NRS_Total = (NRS1 + NRS2 + NRS3 + NRS4 + NRS5 +NRS6 + NRS7+ NRS8 + NRS9+ NRS10 + NRS11) /11)
+
+
+# Creates new variable for contact/familiarity variable where no contact(1)=0 and any contact (2-7) = 1. 
+# Creates a new variable for disagreement where no disagreement(1) = 0 and any disagreement (2-7) = 1.
+df_long4 <- df_long3.4 %>%
+  mutate(Contact_ReScored = recode(Contact, '1'=0, '2'=1, '3'=1, '4'=1, '5'=1, '6'=1, '7'=1)) %>%
+  mutate(Disagree_ReScored= recode(Disagree, '1'=0, '2'=1, '3'=1, '4'=1, '5'=1, '6'=1, '7'=1))
 
 set.seed(121)
 
@@ -502,6 +509,19 @@ df_long4%>%
   filter(!is.na(Accuracy)) %>%
   ggplot() +
   geom_smooth(aes(Accuracy, Objectivity), method = "lm") +
+  scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
+  scale_x_continuous(breaks = c(1:7)) +
+  theme_classic(20)
+
+
+df_long4%>%
+  filter(!is.na(Objectivity)) %>%
+  filter(!is.na(Accuracy)) %>%
+  filter(!is.na(Expert_Type)) %>%
+  filter(Expert_Type == "DNA_Analyst" || Expert_Type == "Firefighter" 
+         || Expert_Type == "Judge" || Expert_Type == "Restaurant_Critic") %>%
+  ggplot() +
+  geom_smooth(aes(Accuracy, Objectivity, fill = Expert_Type), method = "lm") +
   scale_y_continuous(breaks = c(1:7), limits = c(1, 7)) +
   scale_x_continuous(breaks = c(1:7)) +
   theme_classic(20)
