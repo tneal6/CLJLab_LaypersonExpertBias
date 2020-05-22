@@ -9,6 +9,8 @@ library(MuMIn)
 library(corrplot)
 library(brms)
 require(rstan)
+library(sjlabelled)
+library(sjmisc)
 rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
 ## First, import the data (Percepts of Expert Bias Datset_Functional Dataset - CSV)
@@ -1262,6 +1264,12 @@ df_long4%>%
   scale_x_continuous(breaks = c(1:7)) +
   theme_classic(20)
 
+
+# -----------------------------------------------------------------------------
+# EXPLORATORY PLOTS AND MODELS
+# -----------------------------------------------------------------------------
+
+
 #Correlation matrix and graph of all key variables
 data.cor = cor(select(df_long4,Stability:Discretion, Bias_Mitigating:Motivated_Bias_Rv))
 
@@ -1270,12 +1278,36 @@ data.cor
 corrplot(data.cor, tl.col = "black")
 #red is negative corr, blue is possitive corr, dot size is size of the relationship
 
+
+# -------------------------------
+# Some model building with multiple predictors
+# -------------------------------
+
+
+# ---------------------------------------------
+# More info on beta plot graphs can be found here: 
+# https://cran.r-project.org/web/packages/sjPlot/vignettes/plot_model_estimates.html
+# ---------------------------------------------
+
+
 #Exploratory Model-Building 1.  Using lmer with all of the predictors entered in together (main effects) + random intercepts
 
 BigModel1.lmr <- lmer(Objectivity ~ Accuracy + Training + Stability + Clarity + Discretion + Contact +
                         Like + Disagree + (1|Subject), data = df_long4)
 summary(BigModel1.lmr)
 r.squaredGLMM(BigModel1.lmr)
+
+plot_model(BigModel1.lmr)
+
+#Exploratory Model-Building 1.2.  Using lmer with all of the predictors entered in together (main effects) + random intercepts
+# Using the dichotomous versions of Contact and Disagree
+
+BigModel1.2lmr <- lmer(Objectivity ~ Accuracy + Training + Stability + Clarity + Discretion + Contact_ReScored +
+                        Like + Disagree_ReScored + (1|Subject), data = df_long4)
+summary(BigModel1.2lmr)
+r.squaredGLMM(BigModel1.2lmr)
+
+plot_model(BigModel1.2lmr)
 
 #Exploratory Model-Building 2. using lmer with all predictors + the NRS subscales entered together (as main effects) + random intercepts
 
