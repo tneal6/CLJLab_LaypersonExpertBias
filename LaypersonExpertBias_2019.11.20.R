@@ -1012,6 +1012,12 @@ summary(hyp7.lmr)
 r.squaredGLMM(hyp7.lmr)
 
 
+# Same model but using the dichotomous version of Contact 
+hyp7.2lmr <- lmer(Objectivity ~ Contact_ReScored + (1 + Contact_ReScored|Subject), data = df_long4)
+summary(hyp7.2lmr)
+r.squaredGLMM(hyp7.2lmr)
+
+
 # brms model because the one above didn't converge
 hyp7.bm <- brm(Objectivity ~ Contact + (1 + Contact|Subject), data = df_long4)
 summary(hyp7.bm)
@@ -1144,6 +1150,8 @@ hyp9.lmr <- lmer(Objectivity ~ Disagree + (1 + Disagree|Subject), data = df_long
 summary(hyp9.lmr)
 r.squaredGLMM(hyp9.lmr)
 
+
+# Same model but using dichotomous version of Disagree
 hyp9.2lmr <- lmer(Objectivity ~ Disagree_ReScored + (1 + Disagree_ReScored|Subject), data = df_long4)
 summary(hyp9.2lmr)
 r.squaredGLMM(hyp9.2lmr)
