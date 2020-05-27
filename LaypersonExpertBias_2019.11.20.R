@@ -1203,7 +1203,7 @@ plot9 <- p9[[1]] +
   geom_smooth(color = "blue") +
   scale_y_continuous(limits = c(1, 7), breaks = c(1:7)) +
   scale_x_continuous(limits = c(1, 7), breaks = c(1:7)) +
-  ggtitle("Objectivity Predicted on Like") +
+  ggtitle("Objectivity Predicted on Disagree") +
   theme_grey(20) 
 
 plot9 + 
