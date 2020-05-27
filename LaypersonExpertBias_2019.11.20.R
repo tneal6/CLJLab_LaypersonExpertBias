@@ -421,10 +421,10 @@ df_long3.1 <- df_long3%>%
 #name the total scaled variable for the Disagreement subscale "NRS_Disagreement"
 
 df_long3.2 <- df_long3.1 %>%
-  mutate(NRS_Objectivity = (NRS4 + NRS5 + NRS7 + NRS8 + NRS9) / 5)
+  mutate(NRS_Objectivity = (NRS4 + NRS5 + NRS7 + NRS8 + NRS10) / 5)
 
 df_long3.3 <- df_long3.2%>%
-  mutate(NRS_Disagreement = (NRS1 + NRS2 + NRS3 + NRS6 + NRS8 + NRS10) / 6)
+  mutate(NRS_Disagreement = (NRS1 + NRS2 + NRS3 + NRS6 + NRS8 + NRS11) / 6)
 
 df_long3.4 <- df_long3.3%>%
   mutate(NRS_Total = (NRS1 + NRS2 + NRS3 + NRS4 + NRS5 +NRS6 + NRS7+ NRS8 + NRS9+ NRS10 + NRS11) /11)
@@ -1104,8 +1104,8 @@ H8_experts_table <- df_long4 %>%
 ##Histogram of like overall (avg across everything)
 df_long4 %>%
   ggplot() +
-  geom_histogram(aes(Like))
-theme_classic()
+  geom_histogram(aes(Like)) +
+  theme_classic()
 
 # this makes a geom_smooth plot - basically a regression line with shaded error
 df_long4%>%
